@@ -18,7 +18,6 @@ options:
       - Can also be set via the C(OPENAI_API_KEY) environment variable.
     type: str
     required: true
-    no_log: true
   organization:
     description:
       - OpenAI organization ID for API requests.
