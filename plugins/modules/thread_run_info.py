@@ -73,8 +73,7 @@ def main():
 
     try:
         resp = client.get(
-            "threads/%s/runs/%s"
-            % (module.params["thread_id"], module.params["run_id"])
+            "threads/%s/runs/%s" % (module.params["thread_id"], module.params["run_id"])
         )
         module.exit_json(changed=False, run=resp)
     except OpenAIError as e:

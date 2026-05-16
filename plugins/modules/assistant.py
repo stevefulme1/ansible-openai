@@ -127,8 +127,14 @@ def main():
             module.exit_json(changed=True)
         else:
             payload = {}
-            for opt in ("model", "name", "instructions", "tools",
-                        "file_ids", "metadata"):
+            for opt in (
+                "model",
+                "name",
+                "instructions",
+                "tools",
+                "file_ids",
+                "metadata",
+            ):
                 if module.params.get(opt) is not None:
                     payload[opt] = module.params[opt]
 

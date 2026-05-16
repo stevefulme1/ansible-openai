@@ -66,9 +66,7 @@ def main():
     )
 
     try:
-        resp = client.post(
-            "fine_tuning/jobs/%s/cancel" % module.params["job_id"]
-        )
+        resp = client.post("fine_tuning/jobs/%s/cancel" % module.params["job_id"])
         module.exit_json(changed=True, job=resp)
     except OpenAIError as e:
         module.fail_json(msg="Failed to cancel fine-tuning job: %s" % str(e))

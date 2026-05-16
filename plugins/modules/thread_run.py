@@ -96,9 +96,7 @@ def main():
             payload[opt] = module.params[opt]
 
     try:
-        resp = client.post(
-            "threads/%s/runs" % module.params["thread_id"], data=payload
-        )
+        resp = client.post("threads/%s/runs" % module.params["thread_id"], data=payload)
         module.exit_json(changed=True, run=resp)
     except OpenAIError as e:
         module.fail_json(msg="Failed to create run: %s" % str(e))

@@ -69,8 +69,10 @@ jobs:
           pip install "ansible-core>=2.16"
           pip install pytest
       - name: Run unit tests
-        run: python -m pytest tests/unit -v --tb=short
         working-directory: ansible_collections/stevefulme1/openai
+        run: python -m pytest tests/unit/ -v --tb=short
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
   integration-mock:
     runs-on: ubuntu-latest

@@ -11,7 +11,7 @@ __metaclass__ = type
 import json
 
 from ansible.module_utils.urls import open_url
-from ansible.module_utils.six.moves.urllib.parse import urlencode, quote
+from ansible.module_utils.six.moves.urllib.parse import urlencode
 
 
 class OpenAIError(Exception):
@@ -108,7 +108,6 @@ class OpenAIClient:
 
     def upload_file(self, path, file_data, purpose, extra_fields=None):
         """Upload a file using multipart/form-data."""
-        import io
         import os
 
         boundary = "----AnsibleOpenAIBoundary"
@@ -122,9 +121,7 @@ class OpenAIClient:
         if extra_fields:
             for key, value in extra_fields.items():
                 body_parts.append("--%s" % boundary)
-                body_parts.append(
-                    'Content-Disposition: form-data; name="%s"' % key
-                )
+                body_parts.append('Content-Disposition: form-data; name="%s"' % key)
                 body_parts.append("")
                 body_parts.append(str(value))
 
@@ -136,7 +133,9 @@ class OpenAIClient:
         elif isinstance(file_data, bytes):
             content = file_data
         else:
-            content = file_data.encode("utf-8") if isinstance(file_data, str) else file_data
+            content = (
+                file_data.encode("utf-8") if isinstance(file_data, str) else file_data
+            )
 
         body_parts.append("--%s" % boundary)
         body_parts.append(

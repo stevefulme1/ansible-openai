@@ -113,8 +113,14 @@ def main():
         model=module.params["model"],
         messages=module.params["messages"],
     )
-    for opt in ("temperature", "max_tokens", "top_p", "frequency_penalty",
-                "presence_penalty", "stop"):
+    for opt in (
+        "temperature",
+        "max_tokens",
+        "top_p",
+        "frequency_penalty",
+        "presence_penalty",
+        "stop",
+    ):
         if module.params.get(opt) is not None:
             payload[opt] = module.params[opt]
 

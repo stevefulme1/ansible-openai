@@ -74,7 +74,9 @@ def main():
         state=dict(type="str", choices=["present", "absent"], default="present"),
         email=dict(type="str", required=False),
         invite_id=dict(type="str", required=False),
-        role=dict(type="str", required=False, default="reader", choices=["owner", "reader"]),
+        role=dict(
+            type="str", required=False, default="reader", choices=["owner", "reader"]
+        ),
     )
 
     module = AnsibleModule(

@@ -87,9 +87,7 @@ def main():
             choices=["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"],
         ),
         quality=dict(type="str", required=False, choices=["standard", "hd"]),
-        response_format=dict(
-            type="str", required=False, choices=["url", "b64_json"]
-        ),
+        response_format=dict(type="str", required=False, choices=["url", "b64_json"]),
     )
 
     module = AnsibleModule(

@@ -69,7 +69,6 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import open_url
 from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
-    OpenAIError,
     openai_argument_spec,
 )
 
@@ -101,7 +100,9 @@ def main():
     if module.check_mode:
         module.exit_json(changed=True, dest=module.params["dest"])
 
-    base_url = (module.params.get("base_url") or "https://api.openai.com/v1").rstrip("/")
+    base_url = (module.params.get("base_url") or "https://api.openai.com/v1").rstrip(
+        "/"
+    )
     url = "%s/audio/speech" % base_url
 
     headers = {
