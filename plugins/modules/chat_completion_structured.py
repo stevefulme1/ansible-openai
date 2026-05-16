@@ -86,7 +86,7 @@ def main():
         messages=dict(type="list", elements="dict", required=True),
         response_format=dict(type="dict", required=True),
         temperature=dict(type="float", required=False),
-        max_tokens=dict(type="int", required=False),
+        max_tokens=dict(type="int", required=False, no_log=False),
     )
 
     module = AnsibleModule(

@@ -93,7 +93,7 @@ def main():
         tools=dict(type="list", elements="dict", required=True),
         tool_choice=dict(type="raw", required=False),
         temperature=dict(type="float", required=False),
-        max_tokens=dict(type="int", required=False),
+        max_tokens=dict(type="int", required=False, no_log=False),
     )
 
     module = AnsibleModule(

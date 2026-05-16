@@ -28,9 +28,9 @@ options:
     description:
       - Base URL for the OpenAI API.
       - Override for Azure OpenAI or compatible endpoints.
+      - Defaults to C(https://api.openai.com/v1) when not specified.
     type: str
     required: false
-    default: https://api.openai.com/v1
   timeout:
     description:
       - Request timeout in seconds.
