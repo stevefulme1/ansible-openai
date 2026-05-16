@@ -1,0 +1,52 @@
+---
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install ansible-core ansible-lint
+      - name: Run ansible-lint
+        run: ansible-lint
+
+  sanity:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ansible-version: ["2.16", "2.17"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ansible_collections/stevefulme1/openai
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ansible-core ${{ matrix.ansible-version }}
+        run: pip install "ansible-core~=${{ matrix.ansible-version }}.0"
+      - name: Run sanity tests
+        run: ansible-test sanity --docker -v --color
+        working-directory: ansible_collections/stevefulme1/openai
+
+  auto-merge:
+    if: github.actor == 'stevefulme1'
+    needs: [lint, sanity]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
