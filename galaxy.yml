@@ -15,7 +15,7 @@ tags:
   - llm
   - gpt
   - assistants
-  - fine-tuning
+  - finetuning
   - embeddings
   - governance
   - automation
@@ -29,4 +29,3 @@ build_ignore:
   - tests
   - .gitignore
   - "*.tar.gz"
-requires_ansible: ">=2.16.0"

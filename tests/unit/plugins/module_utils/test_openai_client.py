@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from unittest.mock import MagicMock
 
 from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
     OpenAIClient,

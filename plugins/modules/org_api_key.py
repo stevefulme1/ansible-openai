@@ -75,7 +75,7 @@ def main():
     )
 
     try:
-        resp = client.delete("organization/api_keys/%s" % module.params["key_id"])
+        client.delete("organization/api_keys/%s" % module.params["key_id"])
         module.exit_json(changed=True, deleted=True)
     except OpenAIError as e:
         module.fail_json(msg="Failed to delete API key: %s" % str(e))
