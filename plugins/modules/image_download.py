@@ -50,10 +50,7 @@ from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client i
     openai_argument_spec,
 )
 
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib2 import urlopen
+from ansible.module_utils.urls import open_url
 
 
 def main():
@@ -72,7 +69,7 @@ def main():
         module.exit_json(changed=True)
 
     try:
-        resp = urlopen(module.params["url"])
+        resp = open_url(module.params["url"])
         with open(module.params["dest"], "wb") as f:
             f.write(resp.read())
         module.exit_json(changed=True, path=module.params["dest"])

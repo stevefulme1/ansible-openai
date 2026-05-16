@@ -83,9 +83,6 @@ def main():
             r = client.post("audio/transcriptions", data=payload)
             results.append(r)
         module.exit_json(changed=True, transcriptions=results)
-        return
-
-        pass  # handled above
     except OpenAIError as e:
         module.fail_json(msg="audio_batch_transcription failed: %s" % str(e))
 

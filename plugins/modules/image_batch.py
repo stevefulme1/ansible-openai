@@ -90,9 +90,6 @@ def main():
             r = client.post("images/generations", data=payload)
             results.append(r)
         module.exit_json(changed=True, images=results)
-        return
-
-        pass  # handled above
     except OpenAIError as e:
         module.fail_json(msg="image_batch failed: %s" % str(e))
 
