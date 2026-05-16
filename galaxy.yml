@@ -19,6 +19,7 @@ tags:
   - embeddings
   - governance
   - automation
+  - tools
 dependencies: {}
 repository: https://github.com/stevefulme1/ansible-openai
 documentation: https://github.com/stevefulme1/ansible-openai
