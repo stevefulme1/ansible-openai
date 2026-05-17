@@ -21,6 +21,11 @@ options:
     type: int
     required: false
     default: 100
+  offset:
+    description: Number of results to skip for pagination.
+    type: int
+    required: false
+    default: 0
   include_archived:
     description: Whether to include archived projects.
     type: bool

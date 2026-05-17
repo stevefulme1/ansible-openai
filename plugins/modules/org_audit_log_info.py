@@ -21,6 +21,11 @@ options:
     type: int
     required: false
     default: 100
+  offset:
+    description: Number of results to skip for pagination.
+    type: int
+    required: false
+    default: 0
   effective_at_gte:
     description: Filter logs after this timestamp (Unix epoch).
     type: int
