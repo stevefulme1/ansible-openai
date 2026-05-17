@@ -18,7 +18,7 @@ options:
     description: Maximum number of projects to return.
     type: int
     required: false
-    default: 20
+    default: 100
   include_archived:
     description: Whether to include archived projects.
     type: bool

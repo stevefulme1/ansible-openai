@@ -18,7 +18,7 @@ options:
     description: Maximum number of audit log entries to return.
     type: int
     required: false
-    default: 20
+    default: 100
   effective_at_gte:
     description: Filter logs after this timestamp (Unix epoch).
     type: int

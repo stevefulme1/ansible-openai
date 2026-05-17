@@ -22,7 +22,12 @@ options:
     description: Maximum number of events to return.
     type: int
     required: false
-    default: 20
+    default: 100
+  offset:
+    description: Number of items to skip for pagination.
+    type: int
+    required: false
+    default: 0
 """
 
 EXAMPLES = r"""
