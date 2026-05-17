@@ -1,0 +1,84 @@
+---
+# Integration tests for stevefulme1.openai.assistant
+# These tests require valid credentials configured in integration_config.yml
+
+- name: Create assistant (check_mode)
+  stevefulme1.openai.assistant:
+    api_key: "{{ openai_api_key }}"
+    state: present
+    name: "ansible-test-{{ resource_prefix }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+  check_mode: true
+  register: check_result
+
+- name: Verify check_mode reports changed
+  ansible.builtin.assert:
+    that:
+      - check_result is changed
+
+- name: Create assistant
+  stevefulme1.openai.assistant:
+    api_key: "{{ openai_api_key }}"
+    state: present
+    name: "ansible-test-{{ resource_prefix }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+  register: create_result
+
+- name: Verify assistant was created
+  ansible.builtin.assert:
+    that:
+      - create_result is changed
+      - create_result.assistant is defined
+
+- name: Create assistant again (idempotency)
+  stevefulme1.openai.assistant:
+    api_key: "{{ openai_api_key }}"
+    state: present
+    name: "ansible-test-{{ resource_prefix }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+  register: idem_result
+
+- name: Verify idempotent create
+  ansible.builtin.assert:
+    that:
+      - idem_result is not changed
+
+- name: Delete assistant (check_mode)
+  stevefulme1.openai.assistant:
+    api_key: "{{ openai_api_key }}"
+    state: absent
+    name: "ansible-test-{{ resource_prefix }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+  check_mode: true
+  register: delete_check
+
+- name: Verify check_mode delete reports changed
+  ansible.builtin.assert:
+    that:
+      - delete_check is changed
+
+- name: Delete assistant
+  stevefulme1.openai.assistant:
+    api_key: "{{ openai_api_key }}"
+    state: absent
+    name: "ansible-test-{{ resource_prefix }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+  register: delete_result
+
+- name: Verify assistant was deleted
+  ansible.builtin.assert:
+    that:
+      - delete_result is changed
+
+- name: Delete assistant again (idempotent)
+  stevefulme1.openai.assistant:
+    api_key: "{{ openai_api_key }}"
+    state: absent
+    name: "ansible-test-{{ resource_prefix }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+  register: delete_idem
+
+- name: Verify idempotent delete
+  ansible.builtin.assert:
+    that:
+      - delete_idem is not changed
