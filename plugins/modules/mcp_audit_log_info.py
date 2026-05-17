@@ -27,6 +27,16 @@ options:
     description: End date for audit logs.
     type: str
     required: false
+  limit:
+    description:
+      - Maximum number of results to return.
+    type: int
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -56,6 +66,10 @@ def main():
     spec.update(
         start_date=dict(type="str", required=False),
         end_date=dict(type="str", required=False),
+    )
+    spec.update(
+        limit=dict(type='int', default=100),
+        offset=dict(type='int', default=0),
     )
     module = AnsibleModule(
         argument_spec=spec,

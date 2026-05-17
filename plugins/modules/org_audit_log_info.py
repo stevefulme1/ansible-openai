@@ -36,6 +36,16 @@ options:
     type: list
     elements: str
     required: false
+  limit:
+    description:
+      - Maximum number of results to return.
+    type: int
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -68,6 +78,10 @@ def main():
         effective_at_gte=dict(type="int", required=False),
         effective_at_lte=dict(type="int", required=False),
         event_types=dict(type="list", elements="str", required=False),
+    )
+    spec.update(
+        limit=dict(type='int', default=100),
+        offset=dict(type='int', default=0),
     )
 
     module = AnsibleModule(

@@ -22,6 +22,16 @@ options:
     description: ID of the file to retrieve.
     type: str
     required: true
+  limit:
+    description:
+      - Maximum number of results to return.
+    type: int
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -50,6 +60,8 @@ from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client i
 def main():
     spec = openai_argument_spec()
     spec["file_id"] = dict(type="str", required=True)
+    spec["limit"] = dict(type="int", required=False, default=100)
+    spec["offset"] = dict(type="int", required=False, default=0)
 
     module = AnsibleModule(
         argument_spec=spec,
