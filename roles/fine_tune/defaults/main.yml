@@ -1,0 +1,32 @@
+---
+# Required
+# ft_training_file: ""  # Path to JSONL training file
+# ft_model: ""  # Base model: "gpt-4o-mini-2024-07-18", "gpt-3.5-turbo-0125"
+
+# OpenAI connection
+openai_api_key: "{{ lookup('env', 'OPENAI_API_KEY') }}"
+openai_organization: "{{ lookup('env', 'OPENAI_ORG_ID') | default('', true) }}"
+
+# Fine-tuning settings
+ft_suffix: ""  # Custom model suffix
+ft_validation_file: ""  # Path to validation JSONL
+ft_n_epochs: "auto"
+ft_batch_size: "auto"
+ft_learning_rate_multiplier: "auto"
+ft_seed: 42
+
+# Monitoring
+ft_wait_for_completion: true
+ft_wait_timeout: 7200
+ft_poll_interval: 30
+
+# Validation
+ft_validate_data: true
+ft_min_training_examples: 10
+ft_max_training_examples: 100000
+
+# Integration
+ft_wandb_project: ""
+ft_wandb_entity: ""
+
+ft_state: present
