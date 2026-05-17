@@ -1,0 +1,5 @@
+---
+# Integration test configuration for stevefulme1.openai
+openai_api_key: "CHANGEME"
+validate_certs: true
+resource_prefix: "ansible-ci-openai"
