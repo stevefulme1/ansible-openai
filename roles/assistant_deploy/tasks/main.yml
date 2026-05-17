@@ -1,0 +1,74 @@
+---
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - assistant_name is defined and assistant_name | length > 0
+      - assistant_model is defined and assistant_model | length > 0
+      - openai_api_key is defined and openai_api_key | length > 0
+    fail_msg: "Required variables: assistant_name, assistant_model, and OPENAI_API_KEY"
+
+- name: Deploy OpenAI assistant
+  block:
+    - name: Upload files for assistant
+      openai.openai.file:
+        path: "{{ item.path }}"
+        purpose: "{{ item.purpose | default('assistants') }}"
+        api_key: "{{ openai_api_key }}"
+        organization: "{{ openai_organization | default(omit) }}"
+        state: present
+      loop: "{{ assistant_files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      register: _uploaded_files
+      when: assistant_files | length > 0
+
+    - name: Create vector store
+      openai.openai.vector_store:
+        name: "{{ item.name }}"
+        file_ids: >-
+          {{ _uploaded_files.results | default([]) |
+             map(attribute='file.id') | list }}
+        api_key: "{{ openai_api_key }}"
+        organization: "{{ openai_organization | default(omit) }}"
+        state: present
+      loop: "{{ assistant_vector_stores }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: _vector_stores
+      when: assistant_vector_stores | length > 0
+
+    - name: Create or update assistant
+      openai.openai.assistant:
+        name: "{{ assistant_name }}"
+        model: "{{ assistant_model }}"
+        instructions: "{{ assistant_instructions | default(omit) }}"
+        description: "{{ assistant_description | default(omit) }}"
+        tools: "{{ assistant_tools }}"
+        temperature: "{{ assistant_temperature }}"
+        top_p: "{{ assistant_top_p }}"
+        response_format: "{{ assistant_response_format }}"
+        tool_resources: >-
+          {{ {'file_search': {'vector_store_ids':
+               _vector_stores.results | default([]) |
+               map(attribute='vector_store.id') | list}}
+             if assistant_vector_stores | length > 0 else omit }}
+        metadata: "{{ assistant_metadata }}"
+        api_key: "{{ openai_api_key }}"
+        organization: "{{ openai_organization | default(omit) }}"
+        state: "{{ assistant_state }}"
+      register: _assistant
+
+    - name: Display assistant details
+      ansible.builtin.debug:
+        msg: >-
+          Assistant '{{ assistant_name }}' deployed.
+          ID: {{ _assistant.assistant.id | default('N/A') }}
+          Model: {{ assistant_model }}
+          Tools: {{ assistant_tools | map(attribute='type') | list }}
+
+  rescue:
+    - name: Report assistant deployment failure
+      ansible.builtin.fail:
+        msg: >-
+          Assistant deployment failed for '{{ assistant_name }}'.
+          Error: {{ ansible_failed_result.msg | default('Unknown error') }}
