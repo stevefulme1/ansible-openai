@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -87,18 +83,18 @@ def main():
         pid = module.params["project_id"]
         if module.params["state"] == "absent":
             kid = module.params["api_key_id"]
-            resp = client.delete("organization/projects/%s/api_keys/%s" % (pid, kid))
+            resp = client.delete(f"organization/projects/{pid}/api_keys/{kid}")
             module.exit_json(changed=True, api_key=resp)
             return
         payload = {}
         if module.params.get("name"):
             payload["name"] = module.params["name"]
 
-        endpoint = "organization/projects/%s/api_keys" % pid
+        endpoint = f"organization/projects/{pid}/api_keys"
         resp = client.post(endpoint, data=payload)
         module.exit_json(changed=True, api_key=resp)
     except OpenAIError as e:
-        module.fail_json(msg="org_project_api_key failed: %s" % str(e))
+        module.fail_json(msg=f"org_project_api_key failed: {str(e)}")
 
 
 if __name__ == "__main__":

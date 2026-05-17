@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -79,8 +75,8 @@ def main():
         limit=dict(type="int", required=False, default=20),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
 
     module = AnsibleModule(
@@ -97,15 +93,13 @@ def main():
 
     try:
         if module.params.get("batch_id"):
-            resp = client.get("batches/%s" % module.params["batch_id"])
+            resp = client.get("batches/{}".format(module.params["batch_id"]))
             module.exit_json(changed=False, batch=resp)
         else:
-            data = client.list_paginated(
-                "batches", params={"limit": module.params["limit"]}
-            )
+            data = client.list_paginated("batches", params={"limit": module.params["limit"]})
             module.exit_json(changed=False, batches=data)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to get batch info: %s" % str(e))
+        module.fail_json(msg=f"Failed to get batch info: {str(e)}")
 
 
 if __name__ == "__main__":

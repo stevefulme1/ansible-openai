@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -104,7 +100,7 @@ def main():
 
     try:
         if module.params["state"] == "absent":
-            client.delete("vector_stores/%s" % module.params["vector_store_id"])
+            client.delete("vector_stores/{}".format(module.params["vector_store_id"]))
             module.exit_json(changed=True)
         else:
             payload = {}
@@ -114,14 +110,14 @@ def main():
 
             if module.params.get("vector_store_id"):
                 resp = client.post(
-                    "vector_stores/%s" % module.params["vector_store_id"],
+                    "vector_stores/{}".format(module.params["vector_store_id"]),
                     data=payload,
                 )
             else:
                 resp = client.post("vector_stores", data=payload)
             module.exit_json(changed=True, vector_store=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Vector store operation failed: %s" % str(e))
+        module.fail_json(msg=f"Vector store operation failed: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -63,8 +59,8 @@ def main():
         job_id=dict(type="str", required=True),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
     module = AnsibleModule(
         argument_spec=spec,
@@ -82,11 +78,11 @@ def main():
     )
 
     try:
-        endpoint = "fine_tuning/jobs/%s/checkpoints" % module.params["job_id"]
+        endpoint = "fine_tuning/jobs/{}/checkpoints".format(module.params["job_id"])
         resp = client.get(endpoint)
         module.exit_json(changed=False, checkpoints=resp)
     except OpenAIError as e:
-        module.fail_json(msg="fine_tuning_checkpoint_info failed: %s" % str(e))
+        module.fail_json(msg=f"fine_tuning_checkpoint_info failed: {str(e)}")
 
 
 if __name__ == "__main__":

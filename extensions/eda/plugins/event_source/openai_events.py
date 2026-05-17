@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -63,15 +59,14 @@ from datetime import datetime, timezone
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
-
 _BASE_URL = "https://api.openai.com/v1"
 
 
 def _api_get(endpoint, api_key, organization=None):
     """Make a GET request to the OpenAI API."""
-    url = "%s/%s" % (_BASE_URL, endpoint)
+    url = f"{_BASE_URL}/{endpoint}"
     headers = {
-        "Authorization": "Bearer %s" % api_key,
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
     if organization:
@@ -198,7 +193,7 @@ async def main(queue, args):
         for event in all_events:
             if event["type"] not in event_types:
                 continue
-            event_key = "%s-%s" % (
+            event_key = "{}-{}".format(
                 event["type"],
                 event.get("job_id", event.get("timestamp")),
             )

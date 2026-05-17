@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -88,16 +84,14 @@ def main():
 
     try:
         if module.params["state"] == "archived":
-            resp = client.post(
-                "organization/projects/%s/archive" % module.params["project_id"]
-            )
+            resp = client.post("organization/projects/{}/archive".format(module.params["project_id"]))
             module.exit_json(changed=True, project=resp)
         elif module.params.get("project_id"):
             payload = {}
             if module.params.get("name"):
                 payload["name"] = module.params["name"]
             resp = client.post(
-                "organization/projects/%s" % module.params["project_id"],
+                "organization/projects/{}".format(module.params["project_id"]),
                 data=payload,
             )
             module.exit_json(changed=True, project=resp)
@@ -108,7 +102,7 @@ def main():
             )
             module.exit_json(changed=True, project=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Project operation failed: %s" % str(e))
+        module.fail_json(msg=f"Project operation failed: {str(e)}")
 
 
 if __name__ == "__main__":

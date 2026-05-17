@@ -1,13 +1,8 @@
 """Unit tests for stevefulme1.openai.model_info module."""
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
-
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
-
 
 MODULE_PATH = "ansible_collections.stevefulme1.openai.plugins.modules.model_info"
 CLIENT_PATH = "ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client"
@@ -18,8 +13,8 @@ def mock_api_client():
     """Mock API client for model_info."""
     client = MagicMock()
     client.get.return_value = None
-    client.create.return_value = {"model_id": "res-123", "model_id": "test-model_info"}
-    client.update.return_value = {"model_id": "res-123", "model_id": "test-model_info-updated"}
+    client.create.return_value = {"id": "res-123", "model_id": "test-model_info"}
+    client.update.return_value = {"id": "res-123", "model_id": "test-model_info-updated"}
     client.delete.return_value = None
     client.list.return_value = []
     return client
@@ -29,7 +24,7 @@ def mock_api_client():
 def existing_resource():
     """Return a dict representing an existing model_info."""
     return {
-        "model_id": "res-123",
+        "id": "res-123",
         "model_id": "test-model_info",
         "state": "active",
     }
@@ -41,7 +36,7 @@ class TestCreateModelInfo:
     def test_create_returns_resource(self, mock_api_client):
         """Verify create returns resource dict with expected fields."""
         result = mock_api_client.create("model_info", {"model_id": "test-model_info"})
-        assert result["model_id"] == "res-123"
+        assert result["id"] == "res-123"
         assert result["model_id"] == "test-model_info"
         mock_api_client.create.assert_called_once()
 
@@ -143,7 +138,7 @@ class TestGetModelInfo:
         """Verify get returns resource when it exists."""
         mock_api_client.get.return_value = existing_resource
         result = mock_api_client.get("model_info", "res-123")
-        assert result["model_id"] == "res-123"
+        assert result["id"] == "res-123"
 
     def test_get_nonexistent(self, mock_api_client):
         """Verify get returns None for missing resource."""
@@ -165,8 +160,8 @@ class TestListModelInfo:
     def test_list_returns_all(self, mock_api_client):
         """Verify list returns all resources."""
         mock_api_client.list.return_value = [
-            {"model_id": "1", "model_id": "first"},
-            {"model_id": "2", "model_id": "second"},
+            {"id": "1", "model_id": "first"},
+            {"id": "2", "model_id": "second"},
         ]
         result = mock_api_client.list("model_info")
         assert len(result) == 2
@@ -178,7 +173,7 @@ class TestListModelInfo:
 
     def test_list_with_filter(self, mock_api_client):
         """Verify list applies filters."""
-        mock_api_client.list.return_value = [{"model_id": "1", "model_id": "match"}]
+        mock_api_client.list.return_value = [{"id": "1", "model_id": "match"}]
         result = mock_api_client.list("model_info", filters={"model_id": "match"})
         assert len(result) == 1
 

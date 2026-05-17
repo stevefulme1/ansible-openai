@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -68,8 +64,8 @@ def main():
         end_date=dict(type="str", required=False),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
 
     module = AnsibleModule(
@@ -92,7 +88,7 @@ def main():
         resp = client.get("organization/usage", params=params)
         module.exit_json(changed=False, usage=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to get usage data: %s" % str(e))
+        module.fail_json(msg=f"Failed to get usage data: {str(e)}")
 
 
 if __name__ == "__main__":

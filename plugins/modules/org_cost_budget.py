@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -82,7 +78,7 @@ def main():
         resp = client.post("organization/billing/budgets", data=payload)
         module.exit_json(changed=True, budget=resp)
     except OpenAIError as e:
-        module.fail_json(msg="org_cost_budget failed: %s" % str(e))
+        module.fail_json(msg=f"org_cost_budget failed: {str(e)}")
 
 
 if __name__ == "__main__":

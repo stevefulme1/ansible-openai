@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -46,11 +42,10 @@ path:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import open_url
 from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
     openai_argument_spec,
 )
-
-from ansible.module_utils.urls import open_url
 
 
 def main():
@@ -74,7 +69,7 @@ def main():
             f.write(resp.read())
         module.exit_json(changed=True, path=module.params["dest"])
     except Exception as e:
-        module.fail_json(msg="image_download failed: %s" % str(e))
+        module.fail_json(msg=f"image_download failed: {str(e)}")
 
 
 if __name__ == "__main__":

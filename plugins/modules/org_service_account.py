@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -88,20 +84,18 @@ def main():
         pid = module.params["project_id"]
         if module.params["state"] == "absent":
             sid = module.params["service_account_id"]
-            resp = client.delete(
-                "organization/projects/%s/service_accounts/%s" % (pid, sid)
-            )
+            resp = client.delete(f"organization/projects/{pid}/service_accounts/{sid}")
             module.exit_json(changed=True, service_account=resp)
             return
         payload = {}
         if module.params.get("name"):
             payload["name"] = module.params["name"]
 
-        endpoint = "organization/projects/%s/service_accounts" % pid
+        endpoint = f"organization/projects/{pid}/service_accounts"
         resp = client.post(endpoint, data=payload)
         module.exit_json(changed=True, service_account=resp)
     except OpenAIError as e:
-        module.fail_json(msg="org_service_account failed: %s" % str(e))
+        module.fail_json(msg=f"org_service_account failed: {str(e)}")
 
 
 if __name__ == "__main__":

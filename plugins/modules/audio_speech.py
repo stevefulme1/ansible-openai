@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -100,13 +96,11 @@ def main():
     if module.check_mode:
         module.exit_json(changed=True, dest=module.params["dest"])
 
-    base_url = (module.params.get("base_url") or "https://api.openai.com/v1").rstrip(
-        "/"
-    )
-    url = "%s/audio/speech" % base_url
+    base_url = (module.params.get("base_url") or "https://api.openai.com/v1").rstrip("/")
+    url = f"{base_url}/audio/speech"
 
     headers = {
-        "Authorization": "Bearer %s" % module.params["api_key"],
+        "Authorization": "Bearer {}".format(module.params["api_key"]),
         "Content-Type": "application/json",
     }
     if module.params.get("organization"):
@@ -133,7 +127,7 @@ def main():
             f.write(resp.read())
         module.exit_json(changed=True, dest=module.params["dest"])
     except Exception as e:
-        module.fail_json(msg="Speech generation failed: %s" % str(e))
+        module.fail_json(msg=f"Speech generation failed: {str(e)}")
 
 
 if __name__ == "__main__":

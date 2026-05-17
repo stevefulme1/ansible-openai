@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -76,10 +72,10 @@ def main():
     )
 
     try:
-        resp = client.get("models/%s" % module.params["model_id"])
+        resp = client.get("models/{}".format(module.params["model_id"]))
         module.exit_json(changed=False, model=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to get model: %s" % str(e))
+        module.fail_json(msg=f"Failed to get model: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -74,13 +70,10 @@ def main():
     )
 
     try:
-        resp = client.post(
-            "threads/%s/runs/%s/cancel"
-            % (module.params["thread_id"], module.params["run_id"])
-        )
+        resp = client.post("threads/{}/runs/{}/cancel".format(module.params["thread_id"], module.params["run_id"]))
         module.exit_json(changed=True, run=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to cancel run: %s" % str(e))
+        module.fail_json(msg=f"Failed to cancel run: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -83,7 +79,7 @@ def main():
         resp = client.get("files", params=params)
         module.exit_json(changed=False, files=resp.get("data", []))
     except OpenAIError as e:
-        module.fail_json(msg="Failed to list files: %s" % str(e))
+        module.fail_json(msg=f"Failed to list files: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -68,8 +64,8 @@ def main():
         end_date=dict(type="str", required=False),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
     module = AnsibleModule(
         argument_spec=spec,
@@ -89,15 +85,15 @@ def main():
     try:
         params = ""
         if module.params.get("start_date"):
-            params += "?start_date=%s" % (module.params["start_date"])
+            params += "?start_date={}".format(module.params["start_date"])
         if module.params.get("end_date"):
             sep = "&" if params else "?"
-            params += "%send_date=%s" % (sep, module.params["end_date"])
+            params += "{}end_date={}".format(sep, module.params["end_date"])
         endpoint = "organization/mcp/audit_logs" + params
         resp = client.get(endpoint)
         module.exit_json(changed=False, audit_logs=resp)
     except OpenAIError as e:
-        module.fail_json(msg="mcp_audit_log_info failed: %s" % str(e))
+        module.fail_json(msg=f"mcp_audit_log_info failed: {str(e)}")
 
 
 if __name__ == "__main__":

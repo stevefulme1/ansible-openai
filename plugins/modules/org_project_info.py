@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -70,8 +66,8 @@ def main():
         include_archived=dict(type="bool", required=False, default=False),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
 
     module = AnsibleModule(
@@ -94,7 +90,7 @@ def main():
         data = client.list_paginated("organization/projects", params=params)
         module.exit_json(changed=False, projects=data)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to list projects: %s" % str(e))
+        module.fail_json(msg=f"Failed to list projects: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -87,7 +83,7 @@ def main():
         resp = client.post("realtime/sessions", data=payload)
         module.exit_json(changed=True, session=resp)
     except OpenAIError as e:
-        module.fail_json(msg="realtime_session failed: %s" % str(e))
+        module.fail_json(msg=f"realtime_session failed: {str(e)}")
 
 
 if __name__ == "__main__":

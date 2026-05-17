@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -66,10 +62,10 @@ def main():
     )
 
     try:
-        resp = client.post("batches/%s/cancel" % module.params["batch_id"])
+        resp = client.post("batches/{}/cancel".format(module.params["batch_id"]))
         module.exit_json(changed=True, batch=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to cancel batch: %s" % str(e))
+        module.fail_json(msg=f"Failed to cancel batch: {str(e)}")
 
 
 if __name__ == "__main__":

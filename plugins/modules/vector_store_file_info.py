@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -70,8 +66,8 @@ def main():
         limit=dict(type="int", required=False, default=20),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
 
     module = AnsibleModule(
@@ -88,12 +84,12 @@ def main():
 
     try:
         data = client.list_paginated(
-            "vector_stores/%s/files" % module.params["vector_store_id"],
+            "vector_stores/{}/files".format(module.params["vector_store_id"]),
             params={"limit": module.params["limit"]},
         )
         module.exit_json(changed=False, files=data)
     except OpenAIError as e:
-        module.fail_json(msg="Failed to list vector store files: %s" % str(e))
+        module.fail_json(msg=f"Failed to list vector store files: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,13 +1,8 @@
 """Unit tests for stevefulme1.openai.embedding module."""
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
-
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
-
 
 MODULE_PATH = "ansible_collections.stevefulme1.openai.plugins.modules.embedding"
 CLIENT_PATH = "ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client"
@@ -18,8 +13,8 @@ def mock_api_client():
     """Mock API client for embedding."""
     client = MagicMock()
     client.get.return_value = None
-    client.create.return_value = {"model": "res-123", "model": "test-embedding"}
-    client.update.return_value = {"model": "res-123", "model": "test-embedding-updated"}
+    client.create.return_value = {"id": "res-123", "model": "test-embedding"}
+    client.update.return_value = {"id": "res-123", "model": "test-embedding-updated"}
     client.delete.return_value = None
     client.list.return_value = []
     return client
@@ -29,7 +24,7 @@ def mock_api_client():
 def existing_resource():
     """Return a dict representing an existing embedding."""
     return {
-        "model": "res-123",
+        "id": "res-123",
         "model": "test-embedding",
         "state": "active",
     }
@@ -41,7 +36,7 @@ class TestCreateEmbedding:
     def test_create_returns_resource(self, mock_api_client):
         """Verify create returns resource dict with expected fields."""
         result = mock_api_client.create("embedding", {"model": "test-embedding"})
-        assert result["model"] == "res-123"
+        assert result["id"] == "res-123"
         assert result["model"] == "test-embedding"
         mock_api_client.create.assert_called_once()
 
@@ -143,7 +138,7 @@ class TestGetEmbedding:
         """Verify get returns resource when it exists."""
         mock_api_client.get.return_value = existing_resource
         result = mock_api_client.get("embedding", "res-123")
-        assert result["model"] == "res-123"
+        assert result["id"] == "res-123"
 
     def test_get_nonexistent(self, mock_api_client):
         """Verify get returns None for missing resource."""
@@ -165,8 +160,8 @@ class TestListEmbedding:
     def test_list_returns_all(self, mock_api_client):
         """Verify list returns all resources."""
         mock_api_client.list.return_value = [
-            {"model": "1", "model": "first"},
-            {"model": "2", "model": "second"},
+            {"id": "1", "model": "first"},
+            {"id": "2", "model": "second"},
         ]
         result = mock_api_client.list("embedding")
         assert len(result) == 2
@@ -178,7 +173,7 @@ class TestListEmbedding:
 
     def test_list_with_filter(self, mock_api_client):
         """Verify list applies filters."""
-        mock_api_client.list.return_value = [{"model": "1", "model": "match"}]
+        mock_api_client.list.return_value = [{"id": "1", "model": "match"}]
         result = mock_api_client.list("embedding", filters={"model": "match"})
         assert len(result) == 1
 

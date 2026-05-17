@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -97,7 +93,7 @@ def main():
         resp = client.post("batches", data=payload)
         module.exit_json(changed=True, batch=resp)
     except OpenAIError as e:
-        module.fail_json(msg="Batch creation failed: %s" % str(e))
+        module.fail_json(msg=f"Batch creation failed: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -56,8 +52,8 @@ from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client i
 def main():
     argument_spec = openai_argument_spec()
     argument_spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -78,7 +74,7 @@ def main():
         resp = client.get("moderations")
         module.exit_json(changed=False, categories=resp)
     except OpenAIError as e:
-        module.fail_json(msg="moderation_info failed: %s" % str(e))
+        module.fail_json(msg=f"moderation_info failed: {str(e)}")
 
 
 if __name__ == "__main__":

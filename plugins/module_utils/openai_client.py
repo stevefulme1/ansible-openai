@@ -1,24 +1,19 @@
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """Base API client for OpenAI REST API."""
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
-
 import json
 
-from ansible.module_utils.urls import open_url
 from ansible.module_utils.six.moves.urllib.parse import urlencode
+from ansible.module_utils.urls import open_url
 
 
 class OpenAIError(Exception):
     """Exception raised for OpenAI API errors."""
 
     def __init__(self, message, status_code=None, response=None):
-        super(OpenAIError, self).__init__(message)
+        super().__init__(message)
         self.status_code = status_code
         self.response = response
 
@@ -36,7 +31,7 @@ class OpenAIClient:
 
     def _headers(self, extra=None):
         headers = {
-            "Authorization": "Bearer %s" % self.api_key,
+            "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
         if self.organization:
@@ -46,9 +41,9 @@ class OpenAIClient:
         return headers
 
     def _request(self, method, path, data=None, params=None, headers=None):
-        url = "%s/%s" % (self.base_url, path.lstrip("/"))
+        url = "{}/{}".format(self.base_url, path.lstrip("/"))
         if params:
-            url = "%s?%s" % (url, urlencode(params))
+            url = f"{url}?{urlencode(params)}"
         body = None
         if data is not None:
             body = json.dumps(data)
@@ -113,15 +108,15 @@ class OpenAIClient:
         boundary = "----AnsibleOpenAIBoundary"
         body_parts = []
 
-        body_parts.append("--%s" % boundary)
+        body_parts.append(f"--{boundary}")
         body_parts.append('Content-Disposition: form-data; name="purpose"')
         body_parts.append("")
         body_parts.append(purpose)
 
         if extra_fields:
             for key, value in extra_fields.items():
-                body_parts.append("--%s" % boundary)
-                body_parts.append('Content-Disposition: form-data; name="%s"' % key)
+                body_parts.append(f"--{boundary}")
+                body_parts.append(f'Content-Disposition: form-data; name="{key}"')
                 body_parts.append("")
                 body_parts.append(str(value))
 
@@ -133,26 +128,22 @@ class OpenAIClient:
         elif isinstance(file_data, bytes):
             content = file_data
         else:
-            content = (
-                file_data.encode("utf-8") if isinstance(file_data, str) else file_data
-            )
+            content = file_data.encode("utf-8") if isinstance(file_data, str) else file_data
 
-        body_parts.append("--%s" % boundary)
-        body_parts.append(
-            'Content-Disposition: form-data; name="file"; filename="%s"' % filename
-        )
+        body_parts.append(f"--{boundary}")
+        body_parts.append(f'Content-Disposition: form-data; name="file"; filename="{filename}"')
         body_parts.append("Content-Type: application/octet-stream")
         body_parts.append("")
 
         body_header = "\r\n".join(body_parts) + "\r\n"
-        body_footer = "\r\n--%s--\r\n" % boundary
+        body_footer = f"\r\n--{boundary}--\r\n"
 
         body = body_header.encode("utf-8") + content + body_footer.encode("utf-8")
 
-        url = "%s/%s" % (self.base_url, path.lstrip("/"))
+        url = "{}/{}".format(self.base_url, path.lstrip("/"))
         headers = {
-            "Authorization": "Bearer %s" % self.api_key,
-            "Content-Type": "multipart/form-data; boundary=%s" % boundary,
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
         }
         if self.organization:
             headers["OpenAI-Organization"] = self.organization

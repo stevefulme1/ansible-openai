@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -79,18 +75,18 @@ def main():
     )
 
     try:
-        params = "?start_date=%s&end_date=%s" % (
+        params = "?start_date={}&end_date={}".format(
             module.params["start_date"],
             module.params["end_date"],
         )
         if module.params.get("event_types"):
             for et in module.params["event_types"]:
-                params += "&event_types[]=%s" % et
+                params += f"&event_types[]={et}"
         endpoint = "organization/audit_logs" + params
         resp = client.get(endpoint)
         module.exit_json(changed=False, audit_report=resp)
     except OpenAIError as e:
-        module.fail_json(msg="compliance_audit failed: %s" % str(e))
+        module.fail_json(msg=f"compliance_audit failed: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -48,14 +44,14 @@ file:
   returned: always
 """
 
+import time
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
     OpenAIClient,
     OpenAIError,
     openai_argument_spec,
 )
-
-import time
 
 
 def main():
@@ -88,17 +84,17 @@ def main():
 
     try:
         while elapsed < max_wait:
-            resp = client.get("files/%s" % fid)
+            resp = client.get(f"files/{fid}")
             status = resp.get("status", "")
             if status == "processed":
                 module.exit_json(changed=False, file=resp)
             if status == "error":
-                module.fail_json(msg="File processing failed: %s" % resp)
+                module.fail_json(msg=f"File processing failed: {resp}")
             time.sleep(interval)
             elapsed += interval
-        module.fail_json(msg="Timed out waiting for file %s" % fid)
+        module.fail_json(msg=f"Timed out waiting for file {fid}")
     except OpenAIError as e:
-        module.fail_json(msg="file_wait failed: %s" % str(e))
+        module.fail_json(msg=f"file_wait failed: {str(e)}")
 
 
 if __name__ == "__main__":

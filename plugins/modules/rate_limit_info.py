@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -78,7 +74,7 @@ def main():
         resp = client.get("organization/rate_limits", params=params)
         module.exit_json(changed=False, rate_limits=resp.get("data", []))
     except OpenAIError as e:
-        module.fail_json(msg="Failed to get rate limit info: %s" % str(e))
+        module.fail_json(msg=f"Failed to get rate limit info: {str(e)}")
 
 
 if __name__ == "__main__":

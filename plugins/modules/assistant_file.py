@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -84,14 +80,14 @@ def main():
         aid = module.params["assistant_id"]
         fid = module.params["file_id"]
         if module.params["state"] == "absent":
-            resp = client.delete("assistants/%s/files/%s" % (aid, fid))
+            resp = client.delete(f"assistants/{aid}/files/{fid}")
             module.exit_json(changed=True, file=resp)
             return
-        endpoint = "assistants/%s/files" % aid
+        endpoint = f"assistants/{aid}/files"
         resp = client.post(endpoint, data=payload)
         module.exit_json(changed=True, file=resp)
     except OpenAIError as e:
-        module.fail_json(msg="assistant_file failed: %s" % str(e))
+        module.fail_json(msg=f"assistant_file failed: {str(e)}")
 
 
 if __name__ == "__main__":

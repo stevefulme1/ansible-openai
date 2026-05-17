@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -67,10 +63,10 @@ def main():
     )
 
     try:
-        resp = client.delete("models/%s" % module.params["model_id"])
+        resp = client.delete("models/{}".format(module.params["model_id"]))
         module.exit_json(changed=True, deleted=resp.get("deleted", True))
     except OpenAIError as e:
-        module.fail_json(msg="Failed to delete model: %s" % str(e))
+        module.fail_json(msg=f"Failed to delete model: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright: (c) 2026, Steve Fulmer
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
@@ -65,8 +61,8 @@ def main():
         purpose=dict(type="str", required=True),
     )
     spec.update(
-        limit=dict(type='int', default=100),
-        offset=dict(type='int', default=0),
+        limit=dict(type="int", default=100),
+        offset=dict(type="int", default=0),
     )
     module = AnsibleModule(
         argument_spec=spec,
@@ -84,11 +80,11 @@ def main():
     )
 
     try:
-        endpoint = "files?purpose=%s" % module.params["purpose"]
+        endpoint = "files?purpose={}".format(module.params["purpose"])
         resp = client.get(endpoint)
         module.exit_json(changed=False, files=resp)
     except OpenAIError as e:
-        module.fail_json(msg="file_purpose_info failed: %s" % str(e))
+        module.fail_json(msg=f"file_purpose_info failed: {str(e)}")
 
 
 if __name__ == "__main__":

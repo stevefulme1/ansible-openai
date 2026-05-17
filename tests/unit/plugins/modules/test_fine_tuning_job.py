@@ -1,13 +1,8 @@
 """Unit tests for stevefulme1.openai.fine_tuning_job module."""
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
-
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
-
 
 MODULE_PATH = "ansible_collections.stevefulme1.openai.plugins.modules.fine_tuning_job"
 CLIENT_PATH = "ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client"
