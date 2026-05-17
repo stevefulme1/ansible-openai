@@ -23,6 +23,16 @@ options:
     description: ID of the response to retrieve.
     type: str
     required: true
+  limit:
+    description:
+      - Maximum number of results to return.
+    type: int
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -51,6 +61,10 @@ def main():
     spec = openai_argument_spec()
     spec.update(
         response_id=dict(type="str", required=True),
+    )
+    spec.update(
+        limit=dict(type='int', default=100),
+        offset=dict(type='int', default=0),
     )
     module = AnsibleModule(
         argument_spec=spec,

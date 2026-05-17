@@ -27,6 +27,16 @@ options:
     type: int
     required: false
     default: 20
+  limit:
+    description:
+      - Maximum number of results to return.
+    type: int
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -67,6 +77,10 @@ def main():
     spec.update(
         batch_id=dict(type="str", required=False),
         limit=dict(type="int", required=False, default=20),
+    )
+    spec.update(
+        limit=dict(type='int', default=100),
+        offset=dict(type='int', default=0),
     )
 
     module = AnsibleModule(

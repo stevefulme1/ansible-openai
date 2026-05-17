@@ -22,7 +22,12 @@ options:
     description: Maximum number of vector stores to return.
     type: int
     required: false
-    default: 20
+    default: 100
+  offset:
+    description:
+      - Number of results to skip for pagination.
+    type: int
+    default: 0
 """
 
 EXAMPLES = r"""
@@ -50,7 +55,8 @@ from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client i
 
 def main():
     spec = openai_argument_spec()
-    spec["limit"] = dict(type="int", required=False, default=20)
+    spec["limit"] = dict(type="int", required=False, default=100)
+    spec["offset"] = dict(type="int", required=False, default=0)
 
     module = AnsibleModule(
         argument_spec=spec,
