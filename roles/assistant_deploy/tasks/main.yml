@@ -10,7 +10,7 @@
 - name: Deploy OpenAI assistant
   block:
     - name: Upload files for assistant
-      openai.openai.file:
+      stevefulme1.openai.file:
         path: "{{ item.path }}"
         purpose: "{{ item.purpose | default('assistants') }}"
         api_key: "{{ openai_api_key }}"
@@ -23,7 +23,7 @@
       when: assistant_files | length > 0
 
     - name: Create vector store
-      openai.openai.vector_store:
+      stevefulme1.openai.vector_store:
         name: "{{ item.name }}"
         file_ids: >-
           {{ _uploaded_files.results | default([]) |
@@ -38,7 +38,7 @@
       when: assistant_vector_stores | length > 0
 
     - name: Create or update assistant
-      openai.openai.assistant:
+      stevefulme1.openai.assistant:
         name: "{{ assistant_name }}"
         model: "{{ assistant_model }}"
         instructions: "{{ assistant_instructions | default(omit) }}"

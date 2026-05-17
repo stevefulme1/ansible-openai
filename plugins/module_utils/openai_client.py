@@ -3,6 +3,8 @@
 
 """Base API client for OpenAI REST API."""
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 import json
 
 from ansible.module_utils.six.moves.urllib.parse import urlencode

@@ -16,7 +16,7 @@
       delegate_to: localhost
 
     - name: Check current API usage
-      openai.openai.usage_info:
+      stevefulme1.openai.usage_info:
         start_date: "{{ '%Y-%m-%d' | strftime(ansible_date_time.epoch | int - (gov_usage_period_days * 86400)) }}"
         end_date: "{{ ansible_date_time.date }}"
         api_key: "{{ openai_api_key }}"
@@ -35,7 +35,7 @@
         - (_usage.total_cost | default(0) | float) > gov_usage_alert_threshold_usd
 
     - name: Configure projects with rate limits
-      openai.openai.project:
+      stevefulme1.openai.project:
         name: "{{ item.name }}"
         rate_limit:
           tokens_per_minute: "{{ item.rate_limit_tokens_per_minute | default(omit) }}"
@@ -49,7 +49,7 @@
       when: gov_projects | length > 0
 
     - name: Create new API key
-      openai.openai.api_key:
+      stevefulme1.openai.api_key:
         name: "{{ gov_key_name_prefix }}-{{ ansible_date_time.date }}"
         api_key: "{{ openai_api_key }}"
         organization: "{{ openai_organization | default(omit) }}"
@@ -59,14 +59,14 @@
       no_log: true
 
     - name: List existing API keys
-      openai.openai.api_key_info:
+      stevefulme1.openai.api_key_info:
         api_key: "{{ openai_api_key }}"
         organization: "{{ openai_organization | default(omit) }}"
       register: _existing_keys
       when: gov_rotate_keys
 
     - name: Deactivate old API keys
-      openai.openai.api_key:
+      stevefulme1.openai.api_key:
         key_id: "{{ item.id }}"
         api_key: "{{ openai_api_key }}"
         organization: "{{ openai_organization | default(omit) }}"

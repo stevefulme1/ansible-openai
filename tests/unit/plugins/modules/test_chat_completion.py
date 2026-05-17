@@ -1,6 +1,8 @@
 # GNU General Public License v3.0+
 
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 from ansible_collections.stevefulme1.openai.plugins.modules import chat_completion
 
 

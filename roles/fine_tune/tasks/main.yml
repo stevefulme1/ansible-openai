@@ -40,7 +40,7 @@
       when: ft_validate_data
 
     - name: Upload training file
-      openai.openai.file:
+      stevefulme1.openai.file:
         path: "{{ ft_training_file }}"
         purpose: "fine-tune"
         api_key: "{{ openai_api_key }}"
@@ -49,7 +49,7 @@
       register: _training_upload
 
     - name: Upload validation file
-      openai.openai.file:
+      stevefulme1.openai.file:
         path: "{{ ft_validation_file }}"
         purpose: "fine-tune"
         api_key: "{{ openai_api_key }}"
@@ -59,7 +59,7 @@
       when: ft_validation_file | length > 0
 
     - name: Create fine-tuning job
-      openai.openai.fine_tuning_job:
+      stevefulme1.openai.fine_tuning_job:
         model: "{{ ft_model }}"
         training_file: "{{ _training_upload.file.id }}"
         validation_file: "{{ _validation_upload.file.id | default(omit) }}"
@@ -75,7 +75,7 @@
       register: _ft_job
 
     - name: Monitor fine-tuning progress
-      openai.openai.fine_tuning_job_info:
+      stevefulme1.openai.fine_tuning_job_info:
         job_id: "{{ _ft_job.job.id }}"
         api_key: "{{ openai_api_key }}"
         organization: "{{ openai_organization | default(omit) }}"
