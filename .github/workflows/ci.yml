@@ -91,7 +91,7 @@ jobs:
         working-directory: ansible_collections/stevefulme1/openai
 
   auto-merge:
-    if: github.actor == 'stevefulme1'
+    if: github.event_name == 'pull_request' && github.actor == 'stevefulme1'
     needs: [lint, sanity, unit]
     runs-on: ubuntu-latest
     permissions:
