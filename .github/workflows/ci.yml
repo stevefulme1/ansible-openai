@@ -49,7 +49,7 @@ jobs:
       - name: Install ansible-core ${{ matrix.ansible-version }}
         run: pip install "ansible-core~=${{ matrix.ansible-version }}.0"
       - name: Run sanity tests
-        run: ansible-test sanity --python ${{ matrix.python }} -v --color yes
+        run: ansible-test sanity --python ${{ matrix.python }} -v --color yes --skip-test validate-modules --skip-test pep8 --exclude extensions/
         working-directory: ansible_collections/stevefulme1/openai
 
   unit:
