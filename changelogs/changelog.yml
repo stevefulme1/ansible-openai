@@ -5,6 +5,9 @@ releases:
     release_date: "2026-05-18"
     changes:
       security:
-        - api_key_rotation, org_project_api_key, realtime_token, org_service_account - protect sensitive return values from log exposure by registering secrets with module.no_log_values (https://github.com/stevefulme1/ansible-openai/issues/1).
+        - "api_key_rotation, org_project_api_key, realtime_token, org_service_account -
+          protect sensitive return values from log exposure by registering secrets
+          with module.no_log_values
+          (https://github.com/stevefulme1/ansible-openai/issues/1)."
       minor_changes:
         - Added .gitignore to prevent accidental commit of secrets, build artifacts, and IDE files.
