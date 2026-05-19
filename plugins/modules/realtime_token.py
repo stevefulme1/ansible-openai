@@ -77,6 +77,13 @@ def main():
             payload["expires_after"] = module.params["expires_after"]
 
         resp = client.post("realtime/sessions", data=payload)
+
+        # Prevent sensitive values from appearing in logs
+        for sensitive_key in ("key", "secret", "token", "api_key"):
+            val = resp.get(sensitive_key, "")
+            if val:
+                module.no_log_values.add(val)
+
         module.exit_json(changed=True, token=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"realtime_token failed: {str(e)}")

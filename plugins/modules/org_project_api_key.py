@@ -87,6 +87,13 @@ def main():
         if module.params["state"] == "absent":
             kid = module.params["api_key_id"]
             resp = client.delete(f"organization/projects/{pid}/api_keys/{kid}")
+
+            # Prevent sensitive values from appearing in logs
+            for sensitive_key in ("key", "secret", "token", "api_key"):
+                val = resp.get(sensitive_key, "")
+                if val:
+                    module.no_log_values.add(val)
+
             module.exit_json(changed=True, api_key=resp)
             return
         payload = {}
@@ -95,6 +102,13 @@ def main():
 
         endpoint = f"organization/projects/{pid}/api_keys"
         resp = client.post(endpoint, data=payload)
+
+        # Prevent sensitive values from appearing in logs
+        for sensitive_key in ("key", "secret", "token", "api_key"):
+            val = resp.get(sensitive_key, "")
+            if val:
+                module.no_log_values.add(val)
+
         module.exit_json(changed=True, api_key=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"org_project_api_key failed: {str(e)}")

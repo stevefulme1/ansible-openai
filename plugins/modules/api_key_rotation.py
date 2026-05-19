@@ -86,6 +86,13 @@ def main():
             payload["name"] = module.params["name"]
 
         resp = client.post("organization/api_keys", data=payload)
+
+        # Prevent sensitive values from appearing in logs
+        for sensitive_key in ("key", "secret", "token", "api_key"):
+            val = resp.get(sensitive_key, "")
+            if val:
+                module.no_log_values.add(val)
+
         module.exit_json(changed=True, api_key=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"api_key_rotation failed: {str(e)}")

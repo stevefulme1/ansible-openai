@@ -88,6 +88,13 @@ def main():
         if module.params["state"] == "absent":
             sid = module.params["service_account_id"]
             resp = client.delete(f"organization/projects/{pid}/service_accounts/{sid}")
+
+            # Prevent sensitive values from appearing in logs
+            for sensitive_key in ("key", "secret", "token", "api_key"):
+                val = resp.get(sensitive_key, "")
+                if val:
+                    module.no_log_values.add(val)
+
             module.exit_json(changed=True, service_account=resp)
             return
         payload = {}
@@ -96,6 +103,13 @@ def main():
 
         endpoint = f"organization/projects/{pid}/service_accounts"
         resp = client.post(endpoint, data=payload)
+
+        # Prevent sensitive values from appearing in logs
+        for sensitive_key in ("key", "secret", "token", "api_key"):
+            val = resp.get(sensitive_key, "")
+            if val:
+                module.no_log_values.add(val)
+
         module.exit_json(changed=True, service_account=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"org_service_account failed: {str(e)}")
