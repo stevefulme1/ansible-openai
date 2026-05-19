@@ -1,0 +1,74 @@
+#!/usr/bin/python
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+DOCUMENTATION = r"""
+---
+module: assistant_vector_store_info
+short_description: Get vector store configuration for an OpenAI assistant
+description:
+  - Retrieves information about OpenAI assistant.
+version_added: "1.1.0"
+author: Steve Fulmer (@stevefulme1)
+extends_documentation_fragment:
+  - stevefulme1.openai.openai
+options:
+  assistant_id:
+    description: ID of the assistant.
+    type: str
+    required: true
+"""
+
+EXAMPLES = r"""
+- name: Get vector store configuration for an OpenAI assistant
+  stevefulme1.openai.assistant_vector_store_info:
+    api_key: "{{ openai_api_key }}"
+    assistant_id: "example_assistant_id"
+  register: result
+"""
+
+RETURN = r"""
+assistant:
+  description: The assistant data.
+  type: dict
+  returned: always
+
+"""
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
+    OpenAIClient,
+    OpenAIError,
+    openai_argument_spec,
+)
+
+
+def main():
+    spec = openai_argument_spec()
+    spec["assistant_id"] = dict(type="str", required=True)
+
+    module = AnsibleModule(
+        argument_spec=spec,
+        supports_check_mode=True,
+    )
+
+    client = OpenAIClient(
+        api_key=module.params["api_key"],
+        organization=module.params["organization"],
+        base_url=module.params["base_url"],
+        timeout=module.params["timeout"],
+    )
+
+    try:
+        resp = client.get("assistants/{assistant_id}".format(assistant_id=module.params["assistant_id"]))
+        module.exit_json(changed=False, assistant=resp)
+    except OpenAIError as e:
+        module.fail_json(msg=f"Failed to retrieve assistant: {str(e)}")
+
+
+if __name__ == "__main__":
+    main()

@@ -2,10 +2,22 @@
 
 ## [2.1.2] - 2026-05-18
 
+## [2.2.0] - 2026-05-19
+
+### Added
+- Added 41 _info modules for comprehensive query coverage
+- Total module count: 143
+
 ### Security
 - Add `secret: true` to inventory plugin api_key option
 
 ## [2.0.0] - 2026-05-17
+
+## [2.2.0] - 2026-05-19
+
+### Added
+- Added 41 _info modules for comprehensive query coverage
+- Total module count: 143
 
 ### Added
 - Pagination support (limit/offset) for all _info modules
@@ -27,6 +39,12 @@
 - Excluded roles from ansible-lint syntax-check
 
 ## [1.0.0] - 2026-05-15
+
+## [2.2.0] - 2026-05-19
+
+### Added
+- Added 41 _info modules for comprehensive query coverage
+- Total module count: 143
 
 ### Added
 - 103 modules covering full OpenAI platform API (models, fine-tuning, assistants, moderation, governance, MCP)
