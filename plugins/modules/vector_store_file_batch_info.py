@@ -70,7 +70,8 @@ def main():
     )
 
     try:
-        resp = client.get("vector_stores/{vector_store_id}/file_batches/{batch_id}".format(vector_store_id=module.params["vector_store_id"], batch_id=module.params["batch_id"]))
+        resp = client.get("vector_stores/{vector_store_id}/file_batches/{batch_id}".format(vector_store_id=module.params["vector_store_id"],
+            batch_id=module.params["batch_id"]))
         module.exit_json(changed=False, batch=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"Failed to retrieve batch: {str(e)}")
