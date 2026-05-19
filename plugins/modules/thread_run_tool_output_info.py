@@ -70,7 +70,11 @@ def main():
     )
 
     try:
-        resp = client.get("threads/{thread_id}/runs/{run_id}".format(thread_id=module.params["thread_id"], run_id=module.params["run_id"]))
+        resp = client.get(
+            "threads/{thread_id}/runs/{run_id}".format(
+                thread_id=module.params["thread_id"], run_id=module.params["run_id"]
+            )
+        )
         module.exit_json(changed=False, run=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"Failed to retrieve run: {str(e)}")

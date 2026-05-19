@@ -64,7 +64,9 @@ def main():
     )
 
     try:
-        resp = client.get("organization/projects/{project_id}/service_accounts".format(project_id=module.params["project_id"]))
+        resp = client.get(
+            "organization/projects/{project_id}/service_accounts".format(project_id=module.params["project_id"])
+        )
         module.exit_json(changed=False, service_accounts=resp)
     except OpenAIError as e:
         module.fail_json(msg=f"Failed to retrieve service accounts: {str(e)}")
