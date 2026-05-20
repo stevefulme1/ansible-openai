@@ -16,4 +16,3 @@ build_ignore:
   - tests/output
   - .tox
   - .venv
-license_file: COPYING
