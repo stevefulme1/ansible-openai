@@ -6,7 +6,9 @@
   stevefulme1.openai.fine_tuning_job:
     api_key: "{{ openai_api_key }}"
     state: present
-    name: "ansible-test-{{ resource_prefix }}"
+    model: gpt-3.5-turbo
+    training_file: "{{ openai_training_file_id }}"
+    suffix: "ansible-test-{{ resource_prefix }}"
     validate_certs: "{{ validate_certs | default(true) }}"
   check_mode: true
   register: check_result
@@ -20,7 +22,9 @@
   stevefulme1.openai.fine_tuning_job:
     api_key: "{{ openai_api_key }}"
     state: present
-    name: "ansible-test-{{ resource_prefix }}"
+    model: gpt-3.5-turbo
+    training_file: "{{ openai_training_file_id }}"
+    suffix: "ansible-test-{{ resource_prefix }}"
     validate_certs: "{{ validate_certs | default(true) }}"
   register: create_result
 
@@ -28,13 +32,15 @@
   ansible.builtin.assert:
     that:
       - create_result is changed
-      - create_result.fine_tuning_job is defined
+      - create_result.job is defined
 
 - name: Create fine_tuning_job again (idempotency)
   stevefulme1.openai.fine_tuning_job:
     api_key: "{{ openai_api_key }}"
     state: present
-    name: "ansible-test-{{ resource_prefix }}"
+    model: gpt-3.5-turbo
+    training_file: "{{ openai_training_file_id }}"
+    suffix: "ansible-test-{{ resource_prefix }}"
     validate_certs: "{{ validate_certs | default(true) }}"
   register: idem_result
 
@@ -43,42 +49,15 @@
     that:
       - idem_result is not changed
 
-- name: Delete fine_tuning_job (check_mode)
+- name: Cancel fine_tuning_job
   stevefulme1.openai.fine_tuning_job:
     api_key: "{{ openai_api_key }}"
+    job_id: "{{ create_result.job.id }}"
     state: absent
-    name: "ansible-test-{{ resource_prefix }}"
     validate_certs: "{{ validate_certs | default(true) }}"
-  check_mode: true
-  register: delete_check
+  register: cancel_result
 
-- name: Verify check_mode delete reports changed
+- name: Verify fine_tuning_job was cancelled
   ansible.builtin.assert:
     that:
-      - delete_check is changed
-
-- name: Delete fine_tuning_job
-  stevefulme1.openai.fine_tuning_job:
-    api_key: "{{ openai_api_key }}"
-    state: absent
-    name: "ansible-test-{{ resource_prefix }}"
-    validate_certs: "{{ validate_certs | default(true) }}"
-  register: delete_result
-
-- name: Verify fine_tuning_job was deleted
-  ansible.builtin.assert:
-    that:
-      - delete_result is changed
-
-- name: Delete fine_tuning_job again (idempotent)
-  stevefulme1.openai.fine_tuning_job:
-    api_key: "{{ openai_api_key }}"
-    state: absent
-    name: "ansible-test-{{ resource_prefix }}"
-    validate_certs: "{{ validate_certs | default(true) }}"
-  register: delete_idem
-
-- name: Verify idempotent delete
-  ansible.builtin.assert:
-    that:
-      - delete_idem is not changed
+      - cancel_result is changed

@@ -222,8 +222,6 @@ openai_organization: "org-abc123"  # optional
 | `model_info` | List available OpenAI models |
 | `model_detail_info` | Get details of a specific OpenAI model |
 | `model_delete` | Delete a fine-tuned OpenAI model |
-| `model_policy` | Define allowed or blocked models per project |
-| `model_policy_info` | List model policies |
 
 ### Moderation & Content Safety
 
@@ -247,7 +245,6 @@ openai_organization: "org-abc123"  # optional
 
 | Module | Description |
 |---|---|
-| `mcp_server_config` | Configure AAP MCP server connection |
 | `mcp_tool_policy` | Define which tools AI agents can access |
 | `mcp_audit_log_info` | Get MCP action audit trail |
 
@@ -266,16 +263,13 @@ openai_organization: "org-abc123"  # optional
 | `org_user_invite_info` | List pending organization invites |
 | `org_invite` | Send or manage OpenAI organization invites |
 | `org_service_account` | Manage organization service accounts |
-| `org_billing_info` | Get organization billing details |
 | `org_usage_info` | Get OpenAI organization usage data |
 | `org_rate_limit_info` | Get OpenAI rate limit status |
 | `org_audit_log_info` | Get OpenAI organization audit logs |
 | `org_cost_budget` | Set organization spending limits |
 | `api_key_rotation` | Automated API key rotation |
-| `usage_alert` | Configure usage threshold alerts |
 | `usage_report` | Generate usage reports |
 | `compliance_audit` | Generate compliance audit reports |
-| `governance_dashboard_info` | Get governance metrics dashboard |
 
 ## Event-Driven Ansible (EDA)
 
