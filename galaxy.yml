@@ -4,13 +4,13 @@ name: openai
 version: 0.1.0
 readme: README.md
 authors:
-  - Auto-generated
-description: Ansible collection for the OpenAI API API
+  - Steve Fulmer (@stevefulme1)
+description: Ansible collection for the OpenAI API
 license:
   - GPL-3.0-or-later
 tags:
-  - openai
-  - api
+  - cloud
+  - tools
 repository: https://github.com/stevefulme1/ansible-openai
 build_ignore:
   - tests/output

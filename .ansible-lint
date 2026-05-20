@@ -1,0 +1,8 @@
+---
+skip_list:
+  - args[module]
+  - yaml[comments-indentation]
+  - yaml[empty-lines]
+  - yaml[trailing-spaces]
+exclude_paths:
+  - tests/integration/
