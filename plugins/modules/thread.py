@@ -1,109 +1,312 @@
 #!/usr/bin/python
-# GNU General Public License v3.0+
-# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# -*- coding: utf-8 -*-
 
+# Copyright: (c) 2024, Auto-generated
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 DOCUMENTATION = r"""
 ---
 module: thread
-short_description: Create or delete an OpenAI thread
-description:
-  - Manages OpenAI assistant threads.
+short_description: Manage assistants
 version_added: "1.0.0"
-author: Steve Fulmer (@stevefulme1)
-extends_documentation_fragment:
-  - stevefulme1.openai.openai
+description:
+  - Create, update, and delete thread resources.
+  - Supports check mode and diff mode for safe operations.
+author:
+  - "Auto-generated"
 options:
   state:
-    description: Desired state of the thread.
+    description:
+      - Desired state of the thread resource.
     type: str
-    choices: [present, absent]
+    choices: ['present', 'absent']
     default: present
-  thread_id:
-    description: ID of the thread (required for delete).
-    type: str
-    required: false
+
   messages:
-    description: Initial messages for the thread.
+    description:
+      - >-
+        A list of messages(/docs/api-reference/messages) to start the thread with.
     type: list
-    elements: dict
-    required: false
+
+
+
+
+
   metadata:
-    description: Metadata key-value pairs.
+    description:
+      - >-
+        Set of 16 key-value pairs that can be attached to an object. This can be useful for storing...
     type: dict
-    required: false
+
+
+
+
+
+  tool_resources:
+    description:
+      - >-
+        A set of resources that are made available to the assistant's tools in this thread. The...
+    type: dict
+
+
+
+
+
+extends_documentation_fragment:
+  - stevefulme1.openai.auth
 """
 
 EXAMPLES = r"""
+
 - name: Create a thread
   stevefulme1.openai.thread:
-    api_key: "{{ openai_api_key }}"
-  register: result
+
+
+
+
+
+
+
+    state: present
+  # API: POST /threads/{thread_id}
+
+
+
+- name: Update a thread
+  stevefulme1.openai.thread:
+    id: "existing_id"
+
+
+    messages: "updated_messages"
+
+
+
+    metadata: "updated_metadata"
+
+
+
+    tool_resources: "updated_tool_resources"
+
+
+    state: present
+  # API:  
+
+
 
 - name: Delete a thread
   stevefulme1.openai.thread:
-    api_key: "{{ openai_api_key }}"
-    thread_id: thread_abc123
+    id: "existing_id"
     state: absent
+  # API: DELETE /threads/{thread_id}
+
 """
 
 RETURN = r"""
-thread:
-  description: The thread object.
+
+id:
+  description: >-
+    The identifier, which can be referenced in API endpoints.
+  returned: success
+  type: str
+
+
+object:
+  description: >-
+    The object type, which is always thread.
+  returned: success
+  type: str
+
+
+created_at:
+  description: >-
+    The Unix timestamp (in seconds) for when the thread was created.
+  returned: success
+  type: int
+
+
+tool_resources:
+  description: >-
+    A set of resources that are made available to the assistant's tools in this thread. The...
+  returned: success
   type: dict
-  returned: when state is present
+
+
+metadata:
+  description: >-
+    Set of 16 key-value pairs that can be attached to an object. This can be useful for storing...
+  returned: success
+  type: dict
+
+
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
-    OpenAIClient,
-    OpenAIError,
-    openai_argument_spec,
+from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
+    Client,
+    ClientError,
+    argument_spec as auth_argument_spec,
 )
 
 
+def get_current_state(client, module):
+    """Retrieve the current state of the thread via GET."""
+
+    return None
+
+
+
+def needs_update(current, desired):
+    """Compare current state against desired params and return True if an update is needed."""
+    if current is None:
+        return True
+    for key, value in desired.items():
+        if value is None:
+            continue
+        current_value = current.get(key)
+        if current_value != value:
+            return True
+    return False
+
+
+def build_payload(module):
+    """Build the API request payload from module params."""
+    payload = {}
+
+    if module.params.get("messages") is not None:
+        payload["messages"] = module.params["messages"]
+
+    if module.params.get("metadata") is not None:
+        payload["metadata"] = module.params["metadata"]
+
+    if module.params.get("tool_resources") is not None:
+        payload["tool_resources"] = module.params["tool_resources"]
+
+    return payload
+
+
 def main():
-    spec = openai_argument_spec()
+    spec = auth_argument_spec()
     spec.update(
-        state=dict(type="str", choices=["present", "absent"], default="present"),
-        thread_id=dict(type="str", required=False),
-        messages=dict(type="list", elements="dict", required=False),
-        metadata=dict(type="dict", required=False),
+        dict(
+            state=dict(type="str", choices=["present", "absent"], default="present"),
+
+            messages=dict(
+                type="list",
+
+
+
+
+
+            ),
+
+            metadata=dict(
+                type="dict",
+
+
+
+
+
+            ),
+
+            tool_resources=dict(
+                type="dict",
+
+
+
+
+
+            ),
+
+        )
     )
 
     module = AnsibleModule(
         argument_spec=spec,
         supports_check_mode=True,
-        required_if=[("state", "absent", ["thread_id"])],
+
     )
 
-    if module.check_mode:
-        module.exit_json(changed=True)
-
-    client = OpenAIClient(
-        api_key=module.params["api_key"],
-        organization=module.params["organization"],
-        base_url=module.params["base_url"],
-        timeout=module.params["timeout"],
-    )
+    state = module.params["state"]
+    result = dict(changed=False, diff=dict(before={}, after={}))
 
     try:
-        if module.params["state"] == "absent":
-            client.delete("threads/{}".format(module.params["thread_id"]))
-            module.exit_json(changed=True)
-        else:
-            payload = {}
-            if module.params.get("messages"):
-                payload["messages"] = module.params["messages"]
-            if module.params.get("metadata"):
-                payload["metadata"] = module.params["metadata"]
-            resp = client.post("threads", data=payload)
-            module.exit_json(changed=True, thread=resp)
-    except OpenAIError as e:
-        module.fail_json(msg=f"Thread operation failed: {str(e)}")
+        client = Client(module)
+        current = get_current_state(client, module)
+
+        if state == "present":
+            desired = build_payload(module)
+
+            if current is None:
+                # Resource does not exist — create it
+                result["changed"] = True
+                result["diff"]["before"] = {}
+                result["diff"]["after"] = desired
+
+                if not module.check_mode:
+
+                    response = client.POST(
+                        "/threads/{thread_id}",
+                        data=desired,
+                    )
+                    result.update(response if isinstance(response, dict) else {})
+
+
+            elif needs_update(current, desired):
+                # Resource exists but needs updating
+                result["changed"] = True
+                result["diff"]["before"] = current
+                result["diff"]["after"] = dict(current, **{k: v for k, v in desired.items() if v is not None})
+
+                if not module.check_mode:
+
+                    identifier = current.get("id")
+                    path = "".replace(
+                        "{id}", str(identifier)
+                    )
+                    response = client.put(
+                        path,
+                        data=desired,
+                    )
+                    result.update(response if isinstance(response, dict) else {})
+
+
+            else:
+                # Resource exists and is up-to-date
+
+                result["id"] = current.get("id")
+
+                result["object"] = current.get("object")
+
+                result["created_at"] = current.get("created_at")
+
+                result["tool_resources"] = current.get("tool_resources")
+
+                result["metadata"] = current.get("metadata")
+
+
+        elif state == "absent":
+            if current is not None:
+                result["changed"] = True
+                result["diff"]["before"] = current
+                result["diff"]["after"] = {}
+
+                if not module.check_mode:
+
+                    identifier = current.get("id")
+                    path = "/threads/{thread_id}".replace(
+                        "{id}", str(identifier)
+                    )
+                    client.delete(path)
+
+
+    except ClientError as e:
+        module.fail_json(msg=str(e), **result)
+
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":

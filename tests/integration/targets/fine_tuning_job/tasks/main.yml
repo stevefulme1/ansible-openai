@@ -1,63 +1,275 @@
+
 ---
 # Integration tests for stevefulme1.openai.fine_tuning_job
-# These tests require valid credentials configured in integration_config.yml
+#
+# These tests verify full CRUD lifecycle with idempotency and check_mode.
+# A live API endpoint is required.
 
-- name: Create fine_tuning_job (check_mode)
+- name: Set test variables
+  ansible.builtin.set_fact:
+    test_fine_tuning_job_params:
+
+
+      model: "{{ test_model | default("test_model_value") }}"
+
+
+
+      training_file: "{{ test_training_file | default("test_training_file_value") }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ============================================================
+# CREATE - check mode
+# ============================================================
+- name: Create fine_tuning_job (check mode)
   stevefulme1.openai.fine_tuning_job:
-    api_key: "{{ openai_api_key }}"
-    state: present
-    model: gpt-3.5-turbo
-    training_file: "{{ openai_training_file_id }}"
-    suffix: "ansible-test-{{ resource_prefix }}"
-    validate_certs: "{{ validate_certs | default(true) }}"
-  check_mode: true
-  register: check_result
+    "{{ test_fine_tuning_job_params }}"
 
-- name: Verify check_mode reports changed
+    state: present
+  check_mode: true
+  register: create_check
+
+- name: Assert create in check mode reports changed
   ansible.builtin.assert:
     that:
-      - check_result is changed
+      - create_check is changed
+    fail_msg: "Create in check mode should report changed=true"
 
+- name: Verify fine_tuning_job was NOT actually created (check mode)
+  stevefulme1.openai.fine_tuning_job_info:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  register: check_verify
+
+- name: Assert resource does not exist after check mode create
+  ansible.builtin.assert:
+    that:
+      - check_verify.fine_tuning_jobs | length == 0
+    fail_msg: "Resource should not exist after check mode create"
+
+# ============================================================
+# CREATE - real
+# ============================================================
 - name: Create fine_tuning_job
   stevefulme1.openai.fine_tuning_job:
-    api_key: "{{ openai_api_key }}"
+    "{{ test_fine_tuning_job_params }}"
+
     state: present
-    model: gpt-3.5-turbo
-    training_file: "{{ openai_training_file_id }}"
-    suffix: "ansible-test-{{ resource_prefix }}"
-    validate_certs: "{{ validate_certs | default(true) }}"
   register: create_result
 
-- name: Verify fine_tuning_job was created
+- name: Assert create reports changed
   ansible.builtin.assert:
     that:
       - create_result is changed
-      - create_result.job is defined
+    fail_msg: "Create should report changed=true"
 
+- name: Record created resource identifier
+  ansible.builtin.set_fact:
+    created_id: "{{ create_result.id }}"
+
+# ============================================================
+# CREATE - idempotency
+# ============================================================
 - name: Create fine_tuning_job again (idempotency)
   stevefulme1.openai.fine_tuning_job:
-    api_key: "{{ openai_api_key }}"
+    "{{ test_fine_tuning_job_params }}"
+
     state: present
-    model: gpt-3.5-turbo
-    training_file: "{{ openai_training_file_id }}"
-    suffix: "ansible-test-{{ resource_prefix }}"
-    validate_certs: "{{ validate_certs | default(true) }}"
-  register: idem_result
+  register: create_idempotent
 
-- name: Verify idempotent create
+- name: Assert create is idempotent
   ansible.builtin.assert:
     that:
-      - idem_result is not changed
+      - create_idempotent is not changed
+    fail_msg: "Repeated create with same params should report changed=false"
 
-- name: Cancel fine_tuning_job
+# ============================================================
+# READ - verify created resource
+# ============================================================
+- name: Get fine_tuning_job info
+  stevefulme1.openai.fine_tuning_job_info:
+    id: "{{ created_id }}"
+  register: info_result
+
+- name: Assert resource exists and has expected data
+  ansible.builtin.assert:
+    that:
+      - info_result.fine_tuning_jobs | length == 1
+
+
+      - info_result.fine_tuning_jobs[0].model == test_fine_tuning_job_params.model
+
+
+
+      - info_result.fine_tuning_jobs[0].training_file == test_fine_tuning_job_params.training_file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    fail_msg: "Created resource does not match expected values"
+
+# ============================================================
+# UPDATE
+# ============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- name: Update fine_tuning_job
   stevefulme1.openai.fine_tuning_job:
-    api_key: "{{ openai_api_key }}"
-    job_id: "{{ create_result.job.id }}"
-    state: absent
-    validate_certs: "{{ validate_certs | default(true) }}"
-  register: cancel_result
+    id: "{{ created_id }}"
 
-- name: Verify fine_tuning_job was cancelled
+    suffix: "updated_suffix_value"
+
+    validation_file: "updated_validation_file_value"
+
+    state: present
+  register: update_result
+
+- name: Assert update reports changed
   ansible.builtin.assert:
     that:
-      - cancel_result is changed
+      - update_result is changed
+    fail_msg: "Update should report changed=true"
+
+# ============================================================
+# UPDATE - idempotency
+# ============================================================
+- name: Update fine_tuning_job again (idempotency)
+  stevefulme1.openai.fine_tuning_job:
+    id: "{{ created_id }}"
+
+    suffix: "updated_suffix_value"
+
+    validation_file: "updated_validation_file_value"
+
+    state: present
+  register: update_idempotent
+
+- name: Assert update is idempotent
+  ansible.builtin.assert:
+    that:
+      - update_idempotent is not changed
+    fail_msg: "Repeated update with same params should report changed=false"
+
+
+# ============================================================
+# DELETE - check mode
+# ============================================================
+- name: Delete fine_tuning_job (check mode)
+  stevefulme1.openai.fine_tuning_job:
+    id: "{{ created_id }}"
+    state: absent
+  check_mode: true
+  register: delete_check
+
+- name: Assert delete in check mode reports changed
+  ansible.builtin.assert:
+    that:
+      - delete_check is changed
+    fail_msg: "Delete in check mode should report changed=true"
+
+- name: Verify fine_tuning_job still exists after check mode delete
+  stevefulme1.openai.fine_tuning_job_info:
+    id: "{{ created_id }}"
+  register: delete_check_verify
+
+- name: Assert resource still exists after check mode delete
+  ansible.builtin.assert:
+    that:
+      - delete_check_verify.fine_tuning_jobs | length == 1
+    fail_msg: "Resource should still exist after check mode delete"
+
+# ============================================================
+# DELETE - real
+# ============================================================
+- name: Delete fine_tuning_job
+  stevefulme1.openai.fine_tuning_job:
+    id: "{{ created_id }}"
+    state: absent
+  register: delete_result
+
+- name: Assert delete reports changed
+  ansible.builtin.assert:
+    that:
+      - delete_result is changed
+    fail_msg: "Delete should report changed=true"
+
+# ============================================================
+# DELETE - idempotency
+# ============================================================
+- name: Delete fine_tuning_job again (idempotency)
+  stevefulme1.openai.fine_tuning_job:
+    id: "{{ created_id }}"
+    state: absent
+  register: delete_idempotent
+
+- name: Assert delete is idempotent
+  ansible.builtin.assert:
+    that:
+      - delete_idempotent is not changed
+    fail_msg: "Repeated delete should report changed=false"

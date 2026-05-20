@@ -4,29 +4,15 @@ name: openai
 version: 0.1.0
 readme: README.md
 authors:
-  - Steve Fulmer (@stevefulme1)
-description: Ansible collection for managing OpenAI platform resources and AI operations. Status: Pre-release. Under active development.
+  - Auto-generated
+description: Ansible collection for the OpenAI API API
 license:
   - GPL-3.0-or-later
-license_file: ""
 tags:
   - openai
-  - ai
-  - llm
-  - gpt
-  - assistants
-  - finetuning
-  - embeddings
-  - governance
-  - automation
-  - tools
-dependencies: {}
+  - api
 repository: https://github.com/stevefulme1/ansible-openai
-documentation: https://github.com/stevefulme1/ansible-openai
-homepage: https://github.com/stevefulme1/ansible-openai
-issues: https://github.com/stevefulme1/ansible-openai/issues
 build_ignore:
-  - .github
-  - tests
-  - .gitignore
-  - "*.tar.gz"
+  - tests/output
+  - .tox
+  - .venv

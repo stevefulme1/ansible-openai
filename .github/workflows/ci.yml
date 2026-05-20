@@ -1,106 +1,145 @@
+
 ---
 name: CI
-on:
+
+"on":
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+env:
+  NAMESPACE: stevefulme1
+  COLLECTION: openai
+
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install dependencies
-        run: pip install ruff ansible-core ansible-lint
-      - name: Ruff check
-        run: ruff check --ignore E402,UP001,UP010,I001 .
-      - name: Ruff format check
-        run: ruff format --check .
-      - name: Ansible-lint
-        run: ansible-lint
+
+      - name: Install lint dependencies
+        run: pip install yamllint flake8 ansible-lint
+
+      - name: Run yamllint
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+        run: yamllint -s .
+
+      - name: Run flake8
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+        run: flake8 plugins/ --max-line-length=120 --ignore=E402,W503,E303
+
+      - name: Run ansible-lint
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+        run: ansible-lint --strict
 
   sanity:
+    name: Sanity (Ansible ${{ matrix.ansible }} / Python ${{ matrix.python }})
     runs-on: ubuntu-latest
+    needs: lint
     strategy:
+      fail-fast: false
       matrix:
-        include:
-          - ansible-version: "2.16"
-            python: "3.12"
-          - ansible-version: "2.17"
-            python: "3.12"
-          - ansible-version: "2.18"
-            python: "3.12"
-          - ansible-version: "2.18"
-            python: "3.13"
-          - ansible-version: "2.20"
-            python: "3.12"
-          - ansible-version: "2.20"
+        ansible:
+          - stable-2.16
+          - stable-2.17
+          - stable-2.18
+          - stable-2.20
+        python:
+          - "3.12"
+          - "3.13"
+        exclude:
+          # ansible-core 2.16 does not support Python 3.13
+          - ansible: stable-2.16
             python: "3.13"
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          path: ansible_collections/stevefulme1/openai
-      - uses: actions/setup-python@v5
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+      - name: Set up Python ${{ matrix.python }}
+
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install ansible-core ${{ matrix.ansible-version }}
-        run: pip install "ansible-core~=${{ matrix.ansible-version }}.0"
+
+      - name: Install ansible-core (${{ matrix.ansible }})
+        run: pip install "https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz"
+
       - name: Run sanity tests
-        run: ansible-test sanity --python ${{ matrix.python }} -v --color yes --exclude extensions/
-        working-directory: ansible_collections/stevefulme1/openai
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+        run: ansible-test sanity --docker --python ${{ matrix.python }} -v
 
   unit:
+    name: Unit tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python: ["3.12", "3.13"]
+    needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          path: ansible_collections/stevefulme1/openai
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Install dependencies
-        run: |
-          pip install "ansible-core>=2.16"
-          pip install pytest
-      - name: Run unit tests
-        working-directory: ansible_collections/stevefulme1/openai
-        run: python -m pytest tests/unit/ -v --tb=short
-        env:
-          PYTHONPATH: ${{ github.workspace }}
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
 
-  integration-mock:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          path: ansible_collections/stevefulme1/openai
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install dependencies
-        run: pip install "ansible-core>=2.16"
-      - name: Run integration tests (mock)
-        run: ansible-test integration --python 3.12 -v --color yes
-        working-directory: ansible_collections/stevefulme1/openai
 
-  auto-merge:
-    if: github.event_name == 'pull_request' && github.actor == 'stevefulme1'
-    needs: [lint, sanity, unit]
+      - name: Install ansible-core
+        run: pip install ansible-core
+
+      - name: Install test dependencies
+        run: pip install pytest pytest-mock
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+      - name: Run unit tests
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+        run: ansible-test units --docker --python 3.12 -v
+
+  integration:
+    name: Integration tests
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    needs: [sanity, unit]
+    # Integration tests need a live API — allow failures
+    continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
-      - uses: hmarr/auto-approve-action@v4
-      - name: Auto-merge
-        run: gh pr merge --auto --squash "$PR_URL"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ansible-core
+        run: pip install ansible-core
+
+      - name: Run integration tests
+        working-directory: ansible_collections/${{ env.NAMESPACE }}/${{ env.COLLECTION }}
+
+        run: ansible-test integration --docker --python 3.12 -v
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          STEVEFULME1_OPENAI_API_KEY: ${{ secrets.API_KEY }}
+
+
+          STEVEFULME1_OPENAI_API_URL: ${{ secrets.API_URL }}
+

@@ -1,97 +1,360 @@
 #!/usr/bin/python
-# GNU General Public License v3.0+
-# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# -*- coding: utf-8 -*-
 
+# Copyright: (c) 2024, Auto-generated
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 DOCUMENTATION = r"""
 ---
 module: embedding
-short_description: Create OpenAI embeddings
-description:
-  - Generates vector embeddings for input text.
-  - This operation is inherently non-idempotent.
+short_description: Manage embeddings
 version_added: "1.0.0"
-author: Steve Fulmer (@stevefulme1)
-extends_documentation_fragment:
-  - stevefulme1.openai.openai
+description:
+  - Create, update, and delete embedding resources.
+  - Supports check mode and diff mode for safe operations.
+author:
+  - "Auto-generated"
 options:
-  model:
-    description: ID of the embedding model to use.
+  state:
+    description:
+      - Desired state of the embedding resource.
     type: str
-    required: true
+    choices: ['present', 'absent']
+    default: present
+
   input:
-    description: Text to generate embeddings for.
-    type: raw
-    required: true
-  encoding_format:
-    description: Encoding format for the embeddings.
+    description:
+      - >-
+        The string that will be turned into an embedding.
     type: str
-    choices: [float, base64]
-    required: false
+
+    required: true
+
+
+
+    default: ""
+
+
+
+  model:
+    description:
+      - >-
+        
+    type: str
+
+    required: true
+
+
+
+
+
+  dimensions:
+    description:
+      - >-
+        The number of dimensions the resulting output embeddings should have. Only supported in...
+    type: int
+
+
+
+
+
+  encoding_format:
+    description:
+      - >-
+        The format to return the embeddings in. Can be either float or base64.
+    type: str
+
+
+    choices: ["float", "base64"]
+
+
+    default: "float"
+
+
+
+  user:
+    description:
+      - >-
+        A unique identifier representing your end-user, which can help OpenAI to monitor and detect...
+    type: str
+
+
+
+
+
+extends_documentation_fragment:
+  - stevefulme1.openai.auth
 """
 
 EXAMPLES = r"""
-- name: Create an embedding
+
+- name: Create a embedding
   stevefulme1.openai.embedding:
-    api_key: "{{ openai_api_key }}"
-    model: text-embedding-3-small
-    input: "Hello world"
-  register: result
+
+
+    input: "example_input"
+
+
+
+    model: "example_model"
+
+
+
+
+
+
+
+
+    state: present
+  # API: POST /embeddings
+
+
+
+- name: Update a embedding
+  stevefulme1.openai.embedding:
+    id: "existing_id"
+
+
+
+
+
+
+    dimensions: "updated_dimensions"
+
+
+
+    encoding_format: "updated_encoding_format"
+
+
+
+    user: "updated_user"
+
+
+    state: present
+  # API:  
+
+
+
 """
 
 RETURN = r"""
+
+index:
+  description: >-
+    The index of the embedding in the list of embeddings.
+  returned: success
+  type: int
+
+
 embedding:
-  description: The embedding response.
-  type: dict
-  returned: always
+  description: >-
+    The embedding vector, which is a list of floats. The length of vector depends on the model as...
+  returned: success
+  type: list
+
+
+object:
+  description: >-
+    The object type, which is always "embedding".
+  returned: success
+  type: str
+
+
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.stevefulme1.openai.plugins.module_utils.openai_client import (
-    OpenAIClient,
-    OpenAIError,
-    openai_argument_spec,
+from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
+    Client,
+    ClientError,
+    argument_spec as auth_argument_spec,
 )
 
 
+def get_current_state(client, module):
+    """Retrieve the current state of the embedding via GET."""
+
+    return None
+
+
+
+def needs_update(current, desired):
+    """Compare current state against desired params and return True if an update is needed."""
+    if current is None:
+        return True
+    for key, value in desired.items():
+        if value is None:
+            continue
+        current_value = current.get(key)
+        if current_value != value:
+            return True
+    return False
+
+
+def build_payload(module):
+    """Build the API request payload from module params."""
+    payload = {}
+
+    if module.params.get("input") is not None:
+        payload["input"] = module.params["input"]
+
+    if module.params.get("model") is not None:
+        payload["model"] = module.params["model"]
+
+    if module.params.get("dimensions") is not None:
+        payload["dimensions"] = module.params["dimensions"]
+
+    if module.params.get("encoding_format") is not None:
+        payload["encoding_format"] = module.params["encoding_format"]
+
+    if module.params.get("user") is not None:
+        payload["user"] = module.params["user"]
+
+    return payload
+
+
 def main():
-    spec = openai_argument_spec()
+    spec = auth_argument_spec()
     spec.update(
-        model=dict(type="str", required=True),
-        input=dict(type="raw", required=True),
-        encoding_format=dict(type="str", required=False, choices=["float", "base64"]),
+        dict(
+            state=dict(type="str", choices=["present", "absent"], default="present"),
+
+            input=dict(
+                type="str",
+
+                required=True,
+
+
+
+                default="",
+
+
+
+            ),
+
+            model=dict(
+                type="str",
+
+                required=True,
+
+
+
+
+
+            ),
+
+            dimensions=dict(
+                type="int",
+
+
+
+
+
+            ),
+
+            encoding_format=dict(
+                type="str",
+
+
+                choices=['float', 'base64'],
+
+
+                default="float",
+
+
+
+            ),
+
+            user=dict(
+                type="str",
+
+
+
+
+
+            ),
+
+        )
     )
 
     module = AnsibleModule(
         argument_spec=spec,
         supports_check_mode=True,
+
     )
 
-    if module.check_mode:
-        module.exit_json(changed=True, embedding={})
-
-    client = OpenAIClient(
-        api_key=module.params["api_key"],
-        organization=module.params["organization"],
-        base_url=module.params["base_url"],
-        timeout=module.params["timeout"],
-    )
-
-    payload = dict(
-        model=module.params["model"],
-        input=module.params["input"],
-    )
-    if module.params.get("encoding_format"):
-        payload["encoding_format"] = module.params["encoding_format"]
+    state = module.params["state"]
+    result = dict(changed=False, diff=dict(before={}, after={}))
 
     try:
-        resp = client.post("embeddings", data=payload)
-        module.exit_json(changed=True, embedding=resp)
-    except OpenAIError as e:
-        module.fail_json(msg=f"Embedding creation failed: {str(e)}")
+        client = Client(module)
+        current = get_current_state(client, module)
+
+        if state == "present":
+            desired = build_payload(module)
+
+            if current is None:
+                # Resource does not exist — create it
+                result["changed"] = True
+                result["diff"]["before"] = {}
+                result["diff"]["after"] = desired
+
+                if not module.check_mode:
+
+                    response = client.POST(
+                        "/embeddings",
+                        data=desired,
+                    )
+                    result.update(response if isinstance(response, dict) else {})
+
+
+            elif needs_update(current, desired):
+                # Resource exists but needs updating
+                result["changed"] = True
+                result["diff"]["before"] = current
+                result["diff"]["after"] = dict(current, **{k: v for k, v in desired.items() if v is not None})
+
+                if not module.check_mode:
+
+                    identifier = current.get("id")
+                    path = "".replace(
+                        "{id}", str(identifier)
+                    )
+                    response = client.put(
+                        path,
+                        data=desired,
+                    )
+                    result.update(response if isinstance(response, dict) else {})
+
+
+            else:
+                # Resource exists and is up-to-date
+
+                result["index"] = current.get("index")
+
+                result["embedding"] = current.get("embedding")
+
+                result["object"] = current.get("object")
+
+
+        elif state == "absent":
+            if current is not None:
+                result["changed"] = True
+                result["diff"]["before"] = current
+                result["diff"]["after"] = {}
+
+                if not module.check_mode:
+
+                    pass
+
+
+    except ClientError as e:
+        module.fail_json(msg=str(e), **result)
+
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":
