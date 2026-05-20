@@ -1,11 +1,11 @@
 ---
 namespace: stevefulme1
 name: openai
-version: 2.2.0
+version: 0.1.0
 readme: README.md
 authors:
   - Steve Fulmer (@stevefulme1)
-description: Ansible collection for managing OpenAI platform resources and AI operations.
+description: Ansible collection for managing OpenAI platform resources and AI operations. Status: Pre-release. Under active development.
 license:
   - GPL-3.0-or-later
 license_file: ""
