@@ -1,4 +1,4 @@
-"""Unit tests for stevefulme1.openai.thread module."""
+"""Unit tests for stevefulme1.openai.moderation module."""
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -6,17 +6,16 @@ __metaclass__ = type
 from unittest.mock import MagicMock, patch
 import pytest
 
-MODULE_PATH = "ansible_collections.stevefulme1.openai.plugins.modules.thread"
+MODULE_PATH = "ansible_collections.stevefulme1.openai.plugins.modules.moderation"
 CLIENT_PATH = "ansible_collections.stevefulme1.openai.plugins.module_utils.api_client"
 
 
 def _build_resource(**overrides):
-    """Return a mock thread resource dict."""
+    """Return a mock moderation resource dict."""
     base = {
         "id": "res-123",
-        "messages": "test-messages",
-        "metadata": "test-metadata",
-        "tool_resources": "test-tool_resources"
+        "input": "test-input",
+        "model": "test-model"
     }
     base.update(overrides)
     return base
@@ -24,16 +23,15 @@ def _build_resource(**overrides):
 
 @pytest.fixture
 def resource_args(module_args):
-    """Module args for thread operations."""
+    """Module args for moderation operations."""
     module_args.update({
         "state": "present",
         "api_key": "test-api-key",
         "api_url": "https://api.example.com",
         "validate_certs": True,
         "request_timeout": 30,
-        "messages": None,
-        "metadata": None,
-        "tool_resources": None
+        "input": "test-input",
+        "model": None
     })
     return module_args
 
@@ -50,7 +48,7 @@ class TestGetCurrentState:
         mock_module = MagicMock()
         mock_module.params = resource_args
 
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import get_current_state
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import get_current_state
         result = get_current_state(mock_client, mock_module)
         assert result is None
 
@@ -60,26 +58,26 @@ class TestNeedsUpdate:
 
     def test_returns_true_when_no_current(self):
         """needs_update returns True when current state is None."""
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import needs_update
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import needs_update
         assert needs_update(None, {"name": "test"}) is True
 
     def test_returns_true_when_values_differ(self):
         """needs_update returns True when desired differs from current."""
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import needs_update
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import needs_update
         current = {"name": "old-name", "id": "123"}
         desired = {"name": "new-name"}
         assert needs_update(current, desired) is True
 
     def test_returns_false_when_values_match(self):
         """needs_update returns False when desired matches current."""
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import needs_update
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import needs_update
         current = {"name": "same", "id": "123"}
         desired = {"name": "same"}
         assert needs_update(current, desired) is False
 
     def test_ignores_none_values_in_desired(self):
         """needs_update ignores None values in desired dict."""
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import needs_update
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import needs_update
         current = {"name": "test", "description": "desc"}
         desired = {"name": "test", "description": None}
         assert needs_update(current, desired) is False
@@ -93,7 +91,7 @@ class TestBuildPayload:
         mock_module = MagicMock()
         mock_module.params = resource_args
 
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import build_payload
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import build_payload
         payload = build_payload(mock_module)
         assert isinstance(payload, dict)
 
@@ -107,7 +105,7 @@ class TestBuildPayload:
         mock_module = MagicMock()
         mock_module.params = resource_args
 
-        from ansible_collections.stevefulme1.openai.plugins.modules.thread import build_payload
+        from ansible_collections.stevefulme1.openai.plugins.modules.moderation import build_payload
         payload = build_payload(mock_module)
         for v in payload.values():
             assert v is not None
@@ -132,7 +130,7 @@ class TestCreate:
 
         # Patch get_current_state to return None (new resource)
         with patch(f"{MODULE_PATH}.get_current_state", return_value=None):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
@@ -151,7 +149,7 @@ class TestCreate:
         mock_client_cls.return_value = mock_client
 
         with patch(f"{MODULE_PATH}.get_current_state", return_value=None):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
@@ -177,7 +175,7 @@ class TestDelete:
 
         existing = _build_resource()
         with patch(f"{MODULE_PATH}.get_current_state", return_value=existing):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
@@ -197,7 +195,7 @@ class TestDelete:
         mock_client_cls.return_value = mock_client
 
         with patch(f"{MODULE_PATH}.get_current_state", return_value=None):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
@@ -218,7 +216,7 @@ class TestDelete:
 
         existing = _build_resource()
         with patch(f"{MODULE_PATH}.get_current_state", return_value=existing):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
@@ -233,20 +231,20 @@ class TestUpdate:
     @patch(f"{MODULE_PATH}.AnsibleModule")
     def test_update_when_changed(self, mock_ansible_cls, mock_client_cls, resource_args):
         """Updating a resource when values differ sets changed=True."""
-        resource_args["messages"] = "new-value"
+        resource_args["input"] = "new-value"
         mock_module = MagicMock()
         mock_module.params = resource_args
         mock_module.check_mode = False
         mock_ansible_cls.return_value = mock_module
 
         mock_client = MagicMock()
-        mock_client.put.return_value = _build_resource(messages="new-value")
+        mock_client.put.return_value = _build_resource(input="new-value")
         mock_client_cls.return_value = mock_client
 
-        existing = _build_resource(messages="old-value")
+        existing = _build_resource(input="old-value")
         with patch(f"{MODULE_PATH}.get_current_state", return_value=existing), \
              patch(f"{MODULE_PATH}.needs_update", return_value=True):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
@@ -276,7 +274,7 @@ class TestIdempotent:
 
         with patch(f"{MODULE_PATH}.get_current_state", return_value=existing), \
              patch(f"{MODULE_PATH}.needs_update", return_value=False):
-            from ansible_collections.stevefulme1.openai.plugins.modules.thread import main
+            from ansible_collections.stevefulme1.openai.plugins.modules.moderation import main
             main()
 
         mock_module.exit_json.assert_called_once()
