@@ -16,3 +16,4 @@ credentials*
 .DS_Store
 *.log
 collections/
+.test_namespace/
