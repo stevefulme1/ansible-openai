@@ -1,0 +1,33 @@
+{
+ "collection_info": {
+  "namespace": "stevefulme1",
+  "name": "openai",
+  "version": "0.1.0",
+  "authors": [
+   "Steve Fulmer (@stevefulme1)"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "cloud",
+   "tools"
+  ],
+  "description": "Ansible collection for the OpenAI API",
+  "license": [
+   "GPL-3.0-or-later"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/stevefulme1/ansible-openai",
+  "documentation": null,
+  "homepage": null,
+  "issues": null
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "1310e3a6d8d79294a5643faddb3881c13b876299396d50eb7df693fabbff89cd",
+  "format": 1
+ },
+ "format": 1
+}

@@ -1,32 +1,18 @@
 ---
 namespace: stevefulme1
 name: openai
-version: 2.1.2
+version: 0.1.0
 readme: README.md
 authors:
   - Steve Fulmer (@stevefulme1)
-description: Ansible collection for managing OpenAI platform resources and AI operations.
+description: Ansible collection for the OpenAI API
 license:
   - GPL-3.0-or-later
-license_file: ""
 tags:
-  - openai
-  - ai
-  - llm
-  - gpt
-  - assistants
-  - finetuning
-  - embeddings
-  - governance
-  - automation
+  - cloud
   - tools
-dependencies: {}
 repository: https://github.com/stevefulme1/ansible-openai
-documentation: https://github.com/stevefulme1/ansible-openai
-homepage: https://github.com/stevefulme1/ansible-openai
-issues: https://github.com/stevefulme1/ansible-openai/issues
 build_ignore:
-  - .github
-  - tests
-  - .gitignore
-  - "*.tar.gz"
+  - tests/output
+  - .tox
+  - .venv
