@@ -50,7 +50,11 @@ options:
 
     required: true
 
-    choices: ["/v1/responses", "/v1/chat/completions", "/v1/embeddings", "/v1/completions", "/v1/moderations", "/v1/images/generations", "/v1/images/edits"]
+    choices: [
+      "/v1/responses", "/v1/chat/completions", "/v1/embeddings",
+      "/v1/completions", "/v1/moderations", "/v1/images/generations",
+      "/v1/images/edits"
+    ]
 
   input_file_id:
     description:
@@ -320,8 +324,11 @@ def main():
 
                 required=True,
 
-                choices=['/v1/responses', '/v1/chat/completions', '/v1/embeddings', '/v1/completions',
-                         '/v1/moderations', '/v1/images/generations', '/v1/images/edits'],
+                choices=[
+                    '/v1/responses', '/v1/chat/completions', '/v1/embeddings',
+                    '/v1/completions', '/v1/moderations', '/v1/images/generations',
+                    '/v1/images/edits'
+                ],
 
             ),
 
