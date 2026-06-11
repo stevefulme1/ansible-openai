@@ -5,6 +5,12 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
+    Client,
+    ClientError,
+    argument_spec as auth_argument_spec,
+)
+from ansible.module_utils.basic import AnsibleModule
 
 __metaclass__ = type
 
@@ -112,17 +118,12 @@ metadata:
 
 """
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
-    Client,
-    ClientError,
-    argument_spec as auth_argument_spec,
-)
 
 def get_current_state(client, module):
     """Retrieve the current state of the thread via GET."""
 
     return None
+
 
 def needs_update(current, desired):
     """Compare current state against desired params and return True if an update is needed."""
@@ -135,6 +136,7 @@ def needs_update(current, desired):
         if current_value != value:
             return True
     return False
+
 
 def build_payload(module):
     """Build the API request payload from module params."""
@@ -150,6 +152,7 @@ def build_payload(module):
         payload["tool_resources"] = module.params["tool_resources"]
 
     return payload
+
 
 def main():
     spec = auth_argument_spec()
@@ -255,6 +258,7 @@ def main():
         module.fail_json(msg=str(e), **result)
 
     module.exit_json(**result)
+
 
 if __name__ == "__main__":
     main()

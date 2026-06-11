@@ -5,6 +5,12 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
+    Client,
+    ClientError,
+    argument_spec as auth_argument_spec,
+)
+from ansible.module_utils.basic import AnsibleModule
 
 __metaclass__ = type
 
@@ -89,22 +95,18 @@ moderations:
 
 """
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
-    Client,
-    ClientError,
-    argument_spec as auth_argument_spec,
-)
 
 def fetch_single(client, identifier):
     """Retrieve a single moderation by identifier."""
 
     raise ClientError("GET by identifier is not supported for this resource")
 
+
 def fetch_list(client, module):
     """List moderation resources with optional filtering and pagination."""
 
     raise ClientError("List operation is not supported for this resource")
+
 
 def main():
     spec = auth_argument_spec()
@@ -145,6 +147,7 @@ def main():
         module.fail_json(msg=str(e), **result)
 
     module.exit_json(**result)
+
 
 if __name__ == "__main__":
     main()
