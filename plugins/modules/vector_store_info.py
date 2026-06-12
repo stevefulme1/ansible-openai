@@ -5,14 +5,8 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
-from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
-    Client,
-    ClientError,
-    argument_spec as auth_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
-
 __metaclass__ = type
+
 
 DOCUMENTATION = r"""
 ---
@@ -141,6 +135,12 @@ vector_stores:
 
 """
 
+from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client import (
+    Client,
+    ClientError,
+    argument_spec as auth_argument_spec,
+)
+from ansible.module_utils.basic import AnsibleModule
 
 def fetch_single(client, identifier):
     """Retrieve a single vector_store by identifier."""
