@@ -179,6 +179,7 @@ from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client impo
 )
 from ansible.module_utils.basic import AnsibleModule
 
+
 def get_current_state(client, module):
     """Retrieve the current state of the vector_store via GET."""
 

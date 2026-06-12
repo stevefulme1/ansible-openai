@@ -101,6 +101,7 @@ from ansible_collections.stevefulme1.openai.plugins.module_utils.api_client impo
 )
 from ansible.module_utils.basic import AnsibleModule
 
+
 def fetch_single(client, identifier):
     """Retrieve a single thread by identifier."""
 
