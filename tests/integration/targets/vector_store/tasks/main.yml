@@ -16,8 +16,6 @@
   stevefulme1.openai.vector_store:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_vector_store_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   check_mode: true
   register: create_check
@@ -49,8 +47,6 @@
   stevefulme1.openai.vector_store:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_vector_store_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_result
 
@@ -71,8 +67,6 @@
   stevefulme1.openai.vector_store:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_vector_store_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_idempotent
 
@@ -106,12 +100,8 @@
   stevefulme1.openai.vector_store:
     api_key: "{{ openai_api_key }}"
     id: "{{ created_id }}"
-
     description: "updated_description_value"
-
     name: "updated_name_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_result
 
@@ -128,12 +118,8 @@
   stevefulme1.openai.vector_store:
     api_key: "{{ openai_api_key }}"
     id: "{{ created_id }}"
-
     description: "updated_description_value"
-
     name: "updated_name_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_idempotent
 

@@ -16,8 +16,6 @@
   stevefulme1.openai.assistant:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_assistant_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   check_mode: true
   register: create_check
@@ -49,8 +47,6 @@
   stevefulme1.openai.assistant:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_assistant_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_result
 
@@ -71,8 +67,6 @@
   stevefulme1.openai.assistant:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_assistant_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_idempotent
 
@@ -106,20 +100,12 @@
   stevefulme1.openai.assistant:
     api_key: "{{ openai_api_key }}"
     id: "{{ created_id }}"
-
     description: "updated_description_value"
-
     instructions: "updated_instructions_value"
-
     model: "updated_model_value"
-
     name: "updated_name_value"
-
     reasoning_effort: "updated_reasoning_effort_value"
-
     response_format: "updated_response_format_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_result
 
@@ -136,20 +122,12 @@
   stevefulme1.openai.assistant:
     api_key: "{{ openai_api_key }}"
     id: "{{ created_id }}"
-
     description: "updated_description_value"
-
     instructions: "updated_instructions_value"
-
     model: "updated_model_value"
-
     name: "updated_name_value"
-
     reasoning_effort: "updated_reasoning_effort_value"
-
     response_format: "updated_response_format_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_idempotent
 
