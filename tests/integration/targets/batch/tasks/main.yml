@@ -22,8 +22,6 @@
   stevefulme1.openai.batch:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_batch_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   check_mode: true
   register: create_check
@@ -53,8 +51,6 @@
   stevefulme1.openai.batch:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_batch_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_result
 
@@ -75,8 +71,6 @@
   stevefulme1.openai.batch:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_batch_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_idempotent
 

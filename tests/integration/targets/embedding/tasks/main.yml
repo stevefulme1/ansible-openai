@@ -20,8 +20,6 @@
   stevefulme1.openai.embedding:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_embedding_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   check_mode: true
   register: create_check
@@ -51,8 +49,6 @@
   stevefulme1.openai.embedding:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_embedding_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_result
 
@@ -73,8 +69,6 @@
   stevefulme1.openai.embedding:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_embedding_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_idempotent
 
@@ -116,8 +110,6 @@
     encoding_format: "updated_encoding_format_value"
 
     user: "updated_user_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_result
 
@@ -138,8 +130,6 @@
     encoding_format: "updated_encoding_format_value"
 
     user: "updated_user_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_idempotent
 

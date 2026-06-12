@@ -18,8 +18,6 @@
   stevefulme1.openai.moderation:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_moderation_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   check_mode: true
   register: create_check
@@ -49,8 +47,6 @@
   stevefulme1.openai.moderation:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_moderation_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_result
 
@@ -71,8 +67,6 @@
   stevefulme1.openai.moderation:
     api_key: "{{ openai_api_key }}"
     name: "{{ test_moderation_params.name | default('test-resource') }}"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: create_idempotent
 
@@ -110,8 +104,6 @@
     id: "{{ created_id }}"
 
     model: "updated_model_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_result
 
@@ -130,8 +122,6 @@
     id: "{{ created_id }}"
 
     model: "updated_model_value"
-
-    api_key: "{{ openai_api_key }}"
     state: present
   register: update_idempotent
 
